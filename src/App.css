@@ -1,0 +1,327 @@
+/* Общие стили для страницы */
+body {
+  background-color: #1f1f1f; /* Светлый фон страницы */
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333333; /* Темно-серый цвет для текста */
+}
+
+/* Стили для основного контейнера */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+/* Стили для карточек */
+.card {
+  background-color: #252525; /* Белый фон для карточек */
+  border: 1px solid #929292; /* Светло-серая обводка */
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+  transform: scale(1.05); /* Увеличение при наведении */
+}
+
+/* Акцентные стили для выделенных элементов */
+button, .App-link {
+  color: #ff5722; /* Яркий оранжевый цвет для кнопок и ссылок */
+  text-decoration: none;
+}
+
+/* Стили для шапки приложения */
+.App-header {
+  background-color: #282c34; /* Темный фон для шапки */
+  color: rgb(27, 27, 27);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-size: calc(10px + 2vmin);
+}
+/* App.css */
+
+/* Стили для самой карточки */
+.event-card {
+  width: 300px; /* Ширина карточки */
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 1px solid #000000; /* Обводка карточки */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Лёгкая тень */
+  align-self: flex-start;
+  margin-bottom: 16px; /* Отступ между карточками */
+}
+
+.event-card__image {
+  width: 300px;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Эффект увеличения изображения при наведении */
+.event-card__image:hover {
+  transform: scale(1.05); /* Увеличиваем изображение */
+}
+
+/* Стили для текстовой части карточки */
+.event-card__content {
+  color: rgba(0, 0, 0, 0.83);
+  width: 100%;
+  padding: 8px;
+  text-align: left;
+  flex-grow: 1;
+}
+
+/* Стили для заголовка */
+.event-card__title {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-family: 'Unbounded', sans-serif;
+  font-weight: bold;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  padding-right: 5px;
+}
+
+/* Стили для текста времени, адреса и описания */
+.event-card__text {
+  font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: normal;
+  margin: 5px 0;
+  padding-right: 8px;
+}
+
+/* Стили для описания с обрезкой */
+.event-card__description {
+  position: relative;
+  font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: normal;
+  margin: 5px 0;
+  padding-right: 8px;
+  line-height: 1.2em;
+  max-height: 4.8em;
+  overflow: hidden;
+}
+
+/* Градиент для скрытия последней строки при большем тексте */
+.event-card__description-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, 555555(0, 0%, 100%) 100%);
+}
+/* App.css */
+
+/* Контейнер для календаря */
+.calendar-grid-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #555555;
+  min-height: 100vh;
+}
+
+/* Кнопка для обновления данных */
+.update-button {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+/* Контейнер для карточек */
+.event-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Адаптивная ширина */
+  grid-auto-rows: auto; /* Высота строк зависит от содержимого */
+  gap: 12px; /* Отступ между карточками */
+  justify-content: center; /* Центрирование содержимого */
+  width: 100%; /* Занимаем всю ширину */
+}
+
+/* Добавьте другие стили для элементов, если нужно */
+/* App.css */
+
+/* Контейнер для всего компонента */
+.calendar-rows-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+  background-color: #555555;
+  min-height: 100vh;
+}
+
+/* Кнопка для обновления данных */
+.update-button {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+/* Контейнер для событий */
+.events-container-rows {
+  width: 100%;
+}
+
+/* Ряд с датой и карточками */
+.date-row {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+/* День недели */
+.day {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  text-align: left;
+  width: 150px;
+}
+
+/* Число (дата) */
+.date-part {
+  font-size: 18px;
+  color: #333;
+  text-align: left;
+}
+
+/* Контейнер для карточек */
+.event-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+/* Разделительная линия */
+.divider {
+  margin: 20px 0;
+  border-top: 1px solid #ddd;
+}
+/* App.css */
+
+/* Контейнер для всего компонента */
+.calendar-rand-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #555555;
+  min-height: 100vh;
+}
+
+/* Кнопка для обновления данных */
+.update-button {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+/* Контейнер для карточек */
+.events-container {
+  column-count: auto;
+  column-width: 300px;
+  column-gap: 12px;
+  width: 100%;
+}
+
+/* Каждый элемент карточки */
+.event-item {
+  break-inside: avoid;
+  margin-bottom: 12px;
+}
+/* Основной контейнер */
+.calendar-col-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #555555;
+  min-height: 100vh;
+}
+
+/* Кнопка для обновления данных */
+.update-button {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+/* Контейнер для столбцов с датами и днями недели */
+.date-columns-container {
+  display: flex;
+  overflow-x: auto; /* Горизонтальная прокрутка */
+  gap: 12px; /* Отступы между колонками с датами */
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Колонка с датой и карточками */
+.date-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* День недели (жирный) */
+.date-day {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+/* Число (дата) под днем недели */
+.date-part {
+  font-size: 18px;
+  color: #333;
+  text-align: center;
+}
+
+/* Контейнер для карточек события */
+.events-col-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
