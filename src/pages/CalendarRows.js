@@ -108,9 +108,9 @@ const CalendarRows = () => {
   };
 
   return (
-    <div className="calendar-rows-container">
+    <div className="border">
       {/* Кнопка для обновления данных */}
-      <button onClick={handleUpdateData} className="update-button">
+      <button onClick={handleUpdateData} className="update-button hidden">
         Обновить данные
       </button>
 

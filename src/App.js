@@ -5,26 +5,29 @@ import CalendarGrid from './pages/CalendarGrid';
 import CalendarRand from './pages/CalendarRand';
 import CalendarRows from './pages/CalendarRows';
 import CalendarColumns from './pages/CalendarColumns';
+import logoImage from './img/logo_ensalada.png';
+import Footer from './Footer';
 import './App.css'; 
 
 const App = () => {
   return (
-    <div>
-      <nav>
-        <ul style={{ display: 'flex', justifyContent: 'center', listStyle: 'none', padding: 0 }}>
-          <li style={{ margin: '0 20px' }}>
+    <div class="grid grid-cols-1 min-h-screen">
+      <nav class="p-4 flex">
+        <div class="w-48 py-2"><img src={logoImage}/></div>
+        <ul class="flex-1 flex justify-end gap-8 p-4">
+          <li class="">
             <Link to="/about">О нас</Link>
           </li>
-          <li style={{ margin: '0 20px' }}>
+          <li>
             <Link to="/CalendarGrid">Календарь grid</Link>
           </li>
-          <li style={{ margin: '0 20px' }}>
+          <li>
             <Link to="/CalendarRand">Календарь rand</Link>
           </li>
-          <li style={{ margin: '0 20px' }}>
+          <li>
             <Link to="/CalendarRows">Календарь rows</Link>
           </li>
-          <li style={{ margin: '0 20px' }}>
+          <li>
             <Link to="/CalendarColumns">Календарь columns</Link>
           </li>
         </ul>
@@ -36,6 +39,7 @@ const App = () => {
         <Route path="/CalendarRows" element={<CalendarRows />} />        
         <Route path="/CalendarColumns" element={<CalendarColumns />} />
       </Routes>
+      <Footer />
     </div>
   );
 };

@@ -7,6 +7,8 @@ import { toZonedTime } from 'date-fns-tz'; // Исправленный импо�
 import '../App.css'; // Подключаем файл стилей
 
 const CalendarColumns = () => {
+
+           
   const [events, setEvents] = useState([]); // Локальное состояние для карточек
 
   // Обработчик нажатия на кнопку
@@ -27,9 +29,9 @@ const CalendarColumns = () => {
         return {
           title: record.fields.Name_event || 'Без названия',
           time: eventDate ? (
-            <span>
-              <strong>Когда:</strong> {format(eventDate, 'dd.MM, HH:mm', { locale: ru })}
-            </span>
+            <div>
+               {format(eventDate, 'HH:mm', { locale: ru })}
+            </div>
           ) : (
             ''
           ),
@@ -108,26 +110,27 @@ const CalendarColumns = () => {
   };
 
   return (
-    <div className="calendar-col-container">
+    <div className="overflow-x-auto w-full snap-x snap-mandatory">
+      <div class="flex space-x-0 min-w-max min-h-screen pt-20">
       {/* Кнопка для обновления данных */}
-      <button onClick={handleUpdateData} className="update-button">
+      <button onClick={handleUpdateData} className="update-button hidden">
         Обновить данные
       </button>
 
       {/* Контейнер для столбцов с датами и днями недели */}
-      <div className="date-columns-container">
+      <div className="flex">
         {Object.keys(groupedEvents).map((date) => {
           const { day, datePart } = formatDate(date); // Получаем форматированную дату и день недели
 
           return (
-            <div key={date} className="date-column">
+            <div key={date} className="flex-shrink-0 snap-center px-1 border-r border-[#323232]/30 text-[#565656] text-center">
               {/* День недели (жирный) */}
-              <div className="date-day">{day}</div>
+              <div className="font-medium">{day}</div>
               {/* Число (дата) под днем недели */}
-              <div className="date-part">{datePart}</div>
+              <div className="">{datePart}</div>
 
               {/* Рендерим карточки для данной даты */}
-              <div className="events-col-container">
+              <div className="flex flex-col gap-2 mt-4">
                 {groupedEvents[date].map((event, index) => (
                   <EventCard key={index} {...event} />
                 ))}
@@ -135,6 +138,7 @@ const CalendarColumns = () => {
             </div>
           );
         })}
+      </div>
       </div>
     </div>
   );
