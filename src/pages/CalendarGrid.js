@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchAirtableData } from '../api/api';
-import EventCard from '../components/EventCard';
+import EventCard from '../components/EventCardV2';
 import { parseISO, format } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { ru } from 'date-fns/locale'; // Для локализации на русский язык
@@ -59,12 +59,32 @@ const Calendar_grid = () => {
   }, []); // Пустой массив зависимостей означает вызов только один раз при монтировании
 
   return (
-    <div className="calendar-grid-container">
-      {/* Кнопка для обновления данных */}
+    <div className="lg:flex gap-6 px-6 pb-24">
+
+      <div class="flex-1">
+        <ul class="flex flex-col sticky top-4 bg-[#171717] rounded-xl p-8 gap-2 text-[#999999] max-w-[220px]">
+            <li class="text-xs text-[#454545] py-2">КОГДА?</li>
+            <li><a href="" class="p-2 hover:text-white">Сегодня</a></li>
+            <li><a href="" class="p-2 hover:text-white">Завтра</a></li>
+            <li><a href="" class="p-2 hover:text-white">На этой неделе</a></li>
+            <li><a href="" class="p-2 hover:text-white">На выходных</a></li>
+            
+            <li class="text-xs text-[#454545] mt-4 py-2">КАК?</li>
+            <li><a href="" class="p-2 hover:text-white">С детьми</a></li>
+            <li><a href="" class="p-2 hover:text-white">Спортивно</a></li>
+            <li><a href="" class="p-2 hover:text-white">Познавательно</a></li>
+            <li><a href="" class="p-2 hover:text-white">Весело</a></li>
+            <li><a href="" class="p-2 hover:text-white">Продуктивно</a></li>
       
+            <li class="text-xs text-[#454545] mt-4 py-2">ГДЕ?</li>
+            <li><a href="" class="p-2 hover:text-white">HotSpot</a></li>
+            <li><a href="" class="p-2 hover:text-white">В баре</a></li>
+            <li><a href="" class="p-2 hover:text-white">На улице</a></li>
+        </ul>
+      </div>
 
       {/* Контейнер для карточек */}
-      <div className="event-cards-container">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
         {events.map((event, index) => (
           <EventCard key={index} {...event} />
         ))}
