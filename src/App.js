@@ -2,8 +2,6 @@ import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import About from './pages/About';
 import CalendarGrid from './pages/CalendarGrid';
-import CalendarRand from './pages/CalendarRand';
-import CalendarRows from './pages/CalendarRows';
 import CalendarColumns from './pages/CalendarColumns';
 import logoImage from './img/logo_ensalada.png';
 import Footer from './Footer';
@@ -22,21 +20,13 @@ const App = () => {
             <Link to="/CalendarGrid">Календарь grid</Link>
           </li>
           <li>
-            <Link to="/CalendarRand">Календарь rand</Link>
-          </li>
-          <li>
-            <Link to="/CalendarRows">Календарь rows</Link>
-          </li>
-          <li>
             <Link to="/CalendarColumns">Календарь columns</Link>
           </li>
         </ul>
       </nav>
       <Routes>
         <Route path="/about" element={<About />} />
-        <Route path="/CalendarRand" element={<CalendarRand />} />
-        <Route path="/CalendarGrid" element={<CalendarGrid />} />        
-        <Route path="/CalendarRows" element={<CalendarRows />} />        
+        <Route path="/CalendarGrid" element={<CalendarGrid />} />            
         <Route path="/CalendarColumns" element={<CalendarColumns />} />
       </Routes>
       <Footer />

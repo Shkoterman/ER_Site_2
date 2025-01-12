@@ -7,8 +7,6 @@ import { toZonedTime } from 'date-fns-tz'; // Исправленный импо�
 import '../App.css'; // Подключаем файл стилей
 
 const CalendarColumns = () => {
-
-           
   const [events, setEvents] = useState([]); // Локальное состояние для карточек
 
   // Обработчик нажатия на кнопку
@@ -26,8 +24,16 @@ const CalendarColumns = () => {
           eventDate = toZonedTime(eventDate, 'Europe/Madrid');
         }
 
+        // Преобразуем время в формат "день.месяц" (только дата без времени)
+        const formattedDate = eventDate ? format(eventDate, 'yyyy-MM-dd') : ''; // Используем формат "год-месяц-день"
+        const removeEmoji = (text) => {
+          return text.replace(
+            /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{2B50}\u{2764}\u{FE0F}\u{200B}\u{200C}\u{200D}\u{2060}\u{1F004}-\u{1F0CF}]/gu, ""
+          );
+        };
+        const cleanTitle = removeEmoji(record.fields.Name_event || 'Без названия');
         return {
-          title: record.fields.Name_event || 'Без названия',
+          title: cleanTitle,
           time: eventDate ? (
             <div>
                {format(eventDate, 'HH:mm', { locale: ru })}
@@ -47,35 +53,10 @@ const CalendarColumns = () => {
               ''
             ),
           description: record.fields.event_discriptoin || '',
-          price: (() => {
-            const costAll = record.fields.cost_all;
-            const costMore = record.fields.cost_more;
-
-            if (costAll === 0 && costMore === 0) {
-              return '<strong>Цена: </strong>Бесплатно';
-            }
-
-            if (costAll === costMore && costAll >= 0) {
-              return `${costAll}€`;
-            }
-
-            if (!costAll && costMore > 0) {
-              return `<strong>Цена: </strong> ${costMore}€, только для <a href="https://t.me/ensaladaru/1319" target="_blank" rel="noopener noreferrer">ensalada.more</a>`;
-            }
-
-            if (!costMore && costAll > 0) {
-              return `<strong>Цена: </strong> ${costAll}€`;
-            }
-
-            if (costAll > 0 && costMore > 0) {
-              return `<strong>Цена: </strong> ${costAll}€, ${costMore}€ для <a href="https://t.me/ensaladaru/1319" target="_blank" rel="noopener noreferrer">ensalada.more</a>`;
-            }
-
-            return '';
-          })(),
+          price: record.fields.cost_all || '',
           imageUrl: record.fields.img_url || '',
           link: record.fields.Link || '#',
-          date: record.fields.start_date || '', // Добавляем дату для группировки
+          date: formattedDate, // Оставляем только дату в формате "yyyy-MM-dd" для группировки
         };
       });
       setEvents(formattedEvents); // Обновляем состояние
@@ -111,34 +92,34 @@ const CalendarColumns = () => {
 
   return (
     <div className="overflow-x-auto w-full snap-x snap-mandatory">
-      <div class="flex space-x-0 min-w-max min-h-screen pt-20">
-      {/* Кнопка для обновления данных */}
-      <button onClick={handleUpdateData} className="update-button hidden">
-        Обновить данные
-      </button>
+      <div className="flex space-x-0 min-w-max min-h-screen pt-20">
+        {/* Кнопка для обновления данных */}
+        <button onClick={handleUpdateData} className="update-button hidden">
+          Обновить данные
+        </button>
 
-      {/* Контейнер для столбцов с датами и днями недели */}
-      <div className="flex">
-        {Object.keys(groupedEvents).map((date) => {
-          const { day, datePart } = formatDate(date); // Получаем форматированную дату и день недели
+        {/* Контейнер для столбцов с датами и днями недели */}
+        <div className="flex">
+          {Object.keys(groupedEvents).map((date) => {
+            const { day, datePart } = formatDate(date); // Получаем форматированную дату и день недели
 
-          return (
-            <div key={date} className="flex-shrink-0 snap-center px-1 border-r border-[#323232]/30 text-[#565656] text-center">
-              {/* День недели (жирный) */}
-              <div className="font-medium">{day}</div>
-              {/* Число (дата) под днем недели */}
-              <div className="">{datePart}</div>
+            return (
+              <div key={date} className="flex-shrink-0 snap-center px-1 border-r border-[#323232]/30 text-[#565656] text-center">
+                {/* День недели (жирный) */}
+                <div className="font-medium">{day}</div>
+                {/* Число (дата) под днем недели */}
+                <div className="">{datePart}</div>
 
-              {/* Рендерим карточки для данной даты */}
-              <div className="flex flex-col gap-2 mt-4">
-                {groupedEvents[date].map((event, index) => (
-                  <EventCard key={index} {...event} />
-                ))}
+                {/* Рендерим карточки для данной даты */}
+                <div className="flex flex-col gap-2 mt-4">
+                  {groupedEvents[date].map((event, index) => (
+                    <EventCard key={index} {...event} />
+                  ))}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

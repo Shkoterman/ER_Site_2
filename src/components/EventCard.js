@@ -35,7 +35,7 @@ const EventCard = ({ title, time, address, description, price, imageUrl, placeLi
       {/* Изображение на фоне сверху карточки */}
       <div
         class="h-[220px] bg-cover bg-center rounded-md flex flex-col items-left justify-end"
-      style={{ backgroundImage: `url('https:/ensalada.net/assets/images/covers/8.jpg')` }}>
+        style={{ backgroundImage: `url(${imageUrl})` }}>
       
       
       <div class="px-3 py-2 text-sm backdrop-blur-sm hover:bg-black/50 rounded-md flex justify-between h-16 hover:h-full hover:pt-4 overflow-hidden">
@@ -54,7 +54,7 @@ const EventCard = ({ title, time, address, description, price, imageUrl, placeLi
             </div>
             <div class="flex-none w-12 text-white text-right flex flex-col justify-end">
                     {time && <p className="text-xs text-white/50">{time}</p>}
-                    {price && <p className="text-md pb-1"> от 79€ </p>}
+                    {price && <p className="text-md pb-1"> {price}€ </p>}
             </div>
       </div>
       </div>
