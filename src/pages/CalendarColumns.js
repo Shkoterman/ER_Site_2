@@ -9,9 +9,14 @@ const CalendarColumns = () => {
   const navigate = useNavigate();
 
   const handleCardClick = (event) => {
-    navigate('/event', { state: event });
+    if (event.eventExternalLink !== "") {
+      window.open(event.eventExternalLink, '_blank'); // Открывает внешнюю ссылку в новой вкладке
+    } if (event.eventProfeePagelLink !== "") {
+      window.open(event.eventProfeePagelLink, '_blank'); // Открывает внешнюю ссылку в новой вкладке
+    } else {
+      return true;
+    }
   };
-
   useEffect(() => { // Вызов handleUpdateData при загрузке компонента
     const fetchData = async () => {
       const formattedEvents = await formatAirtableData();

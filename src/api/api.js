@@ -57,26 +57,28 @@ export const checkCachedData = async () => {  // чек, есть ли кэши�
   }
 };
 
-export const formatAirtableData = async () => { // форматирую, собираю под карточки
-  
-  await checkCachedData();  //чек
+export const formatAirtableData = async () => {
+  await checkCachedData(); // чек
   const data = cachedData;
-  return data.map((record) => {
-    //время
-    const utcDate = parseISO(record.fields.start_date); //парс в ISO 
-    const barcelonaTime = toZonedTime(utcDate, 'Europe/Madrid'); //часовой пояс
-    const formattedTime = format(barcelonaTime, "dd MMMM 'в' HH:mm", { locale: ru }); //формат
-    const formattedTimeForColumns = format(barcelonaTime, "EEEE, dd.MM", { locale: ru }); //формат
 
-    const cleanTitle = record.fields.Name_event.replace(
-        /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{2B50}\u{2764}\u{FE0F}\u{200B}\u{200C}\u{200D}\u{2060}\u{1F004}-\u{1F0CF}\u{1F34A}-]/gu, ""
-        );  //ябучие эможди
-    const price = record.fields.cost_all === 0 ? "Бесплатно" : record.fields.cost_all+" €";
-    
-    // булевые поля времени
+  return data.map((record) => {
+    // Время
+    const utcDate = parseISO(record.fields.start_date); // парс в ISO
+    const barcelonaTime = toZonedTime(utcDate, 'Europe/Madrid'); // часовой пояс
+    const formattedTime = format(barcelonaTime, "dd MMMM 'в' HH:mm", { locale: ru }); // формат
+    const formattedTimeForColumns = format(barcelonaTime, "EEEE, dd.MM", { locale: ru }); // формат
+
+    const cleanTitle = record.fields.Name_event?.replace(
+      /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{2B50}\u{2764}\u{FE0F}\u{200B}\u{200C}\u{200D}\u{2060}\u{1F004}-\u{1F0CF}\u{1F34A}-]/gu,
+      ""
+    )?.trim() || ''; // Проверка на undefined
+
+    const price = record.fields.cost_all === 0 ? "Бесплатно" : record.fields.cost_all + " €";
+
+    // Булевые поля времени
     const isTodayEvent = isToday(barcelonaTime);
     const isTomorrowEvent = isTomorrow(barcelonaTime);
-    const isThisWeekEvent = isThisWeek(barcelonaTime, { weekStartsOn: 1 }); // 1- пшт неделя начинается с понедельника
+    const isThisWeekEvent = isThisWeek(barcelonaTime, { weekStartsOn: 1 });
     const atWeekendEvent = isWeekend(barcelonaTime) && isThisWeekEvent;
 
     // Добавляем временные теги в Set timeList
@@ -89,22 +91,25 @@ export const formatAirtableData = async () => { // форматирую, соб�
     if (Array.isArray(record.fields.web_site_tag)) {
       record.fields.web_site_tag.forEach(tag => tagList.add(tag.trim())); // Добавляем теги в Set
     }
+
     return {
       title: cleanTitle,
       time: formattedTime,
       date: formattedTimeForColumns,
-      address: record.fields.adres_name || '',
-      description: record.fields.event_discriptoin || '',
+      address: record.fields.adres_name?.trim() || '', // Проверка на undefined
+      description: record.fields.event_discriptoin?.trim() || '', // Проверка на undefined
       price: price,
-      imageUrl: record.fields.img_url || '',
+      imageUrl: record.fields.img_url?.trim() || '', // Проверка на undefined
       isToday: isTodayEvent,
       isTomorrow: isTomorrowEvent,
       isThisWeek: isThisWeekEvent,
       atWeekend: atWeekendEvent,
-      eventTagList: record.fields.web_site_tag ? [...record.fields.web_site_tag, 'Все'] : ['Все'], // Добавляем "Всегда" в eventTagList
-      };
-    });
-  
+      eventTagList: record.fields.web_site_tag ? [...record.fields.web_site_tag, 'Все'] : ['Все'],
+      eventExternalLink: record.fields.external_link?.trim() || '',
+      eventProfeePagelLink: record.fields.profee_page_link?.trim() || '',
+    };
+  });
 };
+
 export { tagList };
 export { timeList };

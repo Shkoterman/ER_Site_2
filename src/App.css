@@ -368,11 +368,49 @@ button, .App-link {
   margin-top: 20px;
 }
 
-.eventPage-tag {
+.eventPage-time-tag {
   background-color: #444;
   color: #fff;
-  padding: 5px 10px;
-  border-radius: 5px;
+  padding: 6px 12px;
+  border-radius: 8px;
   font-size: 0.9rem;
   font-weight: bold;
 }
+
+.eventPage-tag {
+  background-color: #2a2a2a;
+  color: #ffcc00;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  
+}
+
+.eventPage-button {
+  display: block;
+  width: 100%;
+  padding: 10px 20px;
+  margin: 20px 0;
+  background-color: #ff5c5c;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.eventPage-button:hover {
+  background-color: #ff2e2e;
+  transform: scale(1.02);
+}
+
+.eventPage-button:active {
+  background-color: #e60000;
+  transform: scale(0.98);
+}
+
+
