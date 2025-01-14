@@ -6,7 +6,7 @@ const EventPage = () => {
   const location = useLocation();
   const event = location.state; // Получаем объект события через state
 
-  const handleButtonClick = () => {
+  const handleEventButtonClick = () => {
     if (event.eventExternalLink) {
       window.open(event.eventExternalLink, '_blank'); // Открывает ссылку в новой вкладке
     } else {
@@ -14,23 +14,60 @@ const EventPage = () => {
     }
   };
 
+  const handleAddressClick = () => {
+    if (event.eventExternalLink) {
+      window.open(event.placeLink, '_blank'); // Открывает ссылку в новой вкладке
+    } else {
+      alert('Ссылка не найдена'); // Сообщение, если ссылка отсутствует
+    }
+  };
+  console.log(event.placeLink)
   return (
     <div className="eventPage-container">
+      
       <h1 className="eventPage-title">{event.title}</h1>
+
       <img
         src={event.imageUrl}
         alt={event.title}
         className="eventPage-image"
       />
-      <p className="eventPage-time">Время начала: {event.time}</p>
-      <p className="eventPage-address">Адрес: {event.address}</p>
+      <p className="eventPage-time">Когда: {event.time}</p>
+
+      {event.placeLink?.length > 0 ? (
+        event.placeAdres?.length > 0 ? (
+        <button
+          className="eventPage-address-button"
+          onClick={() => handleAddressClick(event.placeName, event.placeAdres)}
+        >
+          Где: {event.placeName}, {event.placeAdres}
+        </button>
+      ) : (
+        <button
+          className="eventPage-address-button"
+          onClick={() => handleAddressClick(event.placeName, event.placeAdres)}
+        >
+          Где: {event.placeName}
+        </button>))
+           
+      : (
+        event.placeAdres?.length > 0 ? (
+          <p className="eventPage-address">
+            Где: {event.placeName}, {event.placeAdres}
+          </p>
+        ) : (
+          <p className="eventPage-address">
+            Где: {event.placeName}
+          </p>
+        )
+      )}
       <p className="eventPage-description">{event.description}</p>
       <p className="eventPage-price">Цена: {event.price}</p>
 
       {/* Кнопка для открытия ссылки */}
       <button 
         className="eventPage-button" 
-        onClick={handleButtonClick}
+        onClick={handleEventButtonClick}
       >
         Перейти на страницу события
       </button>

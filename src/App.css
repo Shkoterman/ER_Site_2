@@ -329,6 +329,7 @@ button, .App-link {
 
 /* --- ДЛЯ eventPage --- */
 
+
 .eventPage-container {
   max-width: 800px;
   margin: 0 auto;
@@ -386,7 +387,7 @@ button, .App-link {
   font-weight: bold;
   
 }
-
+/* --- кнопки --- */
 .eventPage-button {
   display: block;
   width: 100%;
@@ -413,4 +414,28 @@ button, .App-link {
   transform: scale(0.98);
 }
 
+.eventPage-address-button {
+  display: block;
+  width: 100%;
+  padding: 10px 20px;
+  margin: 20px 0;
+  background-color: #ff5c5c;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
 
+.eventPage-address-button:hover {
+  background-color: #ff2e2e;
+  transform: scale(1.02);
+}
+
+.eventPage-address-button:active {
+  background-color: #e60000;
+  transform: scale(0.98);
+}

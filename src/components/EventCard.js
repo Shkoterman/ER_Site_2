@@ -4,7 +4,7 @@ import '../App.css'; // Импортируем стили из App.css
    
          
 
-const EventCard = ({ title, time, address, description, price, imageUrl, placeLink }) => {
+const EventCard = ({ title, time, placeName, description, price, imageUrl }) => {
     
     
     
@@ -19,7 +19,7 @@ const EventCard = ({ title, time, address, description, price, imageUrl, placeLi
             {/* Текстовая часть карточки */}
       <div className="px-3 py-0.5 text-left text-[#f5f5f4]/50 text-xs">
 
-        {address && <p className="hidden">{address}</p>}
+        {placeName && <p className="hidden">{placeName}</p>}
 
         {time && <p className="hidden">{time}</p>}
 
@@ -54,7 +54,7 @@ const EventCard = ({ title, time, address, description, price, imageUrl, placeLi
             </div>
             <div className="flex-none w-12 text-white text-right flex flex-col justify-end">
                     {time && <p className="text-xs text-white/50">{time}</p>}
-                    {price && <p className="text-md pb-1"> {price}€ </p>}
+                    {price && <p className="text-md pb-1"> {price} </p>}
             </div>
       </div>
       </div>

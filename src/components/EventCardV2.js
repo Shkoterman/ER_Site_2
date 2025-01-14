@@ -4,7 +4,7 @@ import '../App.css'; // Импортируем стили из App.css
    
          
 
-const EventCard = ({ title, time, address, description, price, imageUrl, placeLink }) => {
+const EventCard = ({ title, time, address, description, price, imageUrl, WeekDay, dataDay, dataMouth, DataTime, placeLink, placeAdres, placeName }) => {
     
     // bg-gradient-to-t from-[#333033] from-30% via-[#333033]/5 via-60% to-[#333033]/30 to-100%
     
@@ -19,9 +19,9 @@ return (
         
         <div className="h-40 px-4">
             <div class="text-[48px] leading-[48px] font-[700] pt-8">
-                14<span class="text-lg font-[200] px-1 text-[#676767]">/01</span>
+              {dataDay}<span class="text-lg font-[200] px-1 text-[#676767]">/{dataMouth}</span>
             </div>
-            <div class="text-[11px] font-[500] -pt-2">ВТОРНИК</div>
+            <div class="text-[11px] font-[500] -pt-2">{WeekDay}</div>
         </div>
     
         <h3 className="text-[#FEFEFE] text-[19px] font-[700] text-left leading-[22px] pt-6 pb-2 px-4 uppercase tracking-wide">{title}</h3>
@@ -33,7 +33,7 @@ return (
     
         <div className="flex justify-between px-4">
             <div className="flex-1">
-                {time && <p className="text-sm leading-[16px] py-0 text-[#676767] font-[600]">11:00<br/> HotSpot</p>}
+                {time && <p className="text-sm leading-[16px] py-0 text-[#676767] font-[600]">{DataTime}<br/> {placeName}</p>}
             </div>
             <div className="flex-none text-right">
                 {price && <div className="bg-[#E1B71C] text-[#272527] px-6 py-1 rounded-full text-lg font-[800]"> {price} </div>}

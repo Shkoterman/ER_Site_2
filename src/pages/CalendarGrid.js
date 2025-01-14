@@ -12,7 +12,7 @@ const Calendar_grid = () => {
   const [filtersTimeSet, setFiltersTimeSet] = useState({}); // Состояние для активных фильтров времени 
   const [filtersTagSet, setFiltersTagSet] = useState({}); // Состояние для активных фильтров тэгов 
   const [filteredEvents, setFilteredEvents] = useState([]); // отфильтрованные события
-  //console.log(filteredEvents)
+  
 
   const navigate = useNavigate();
 
@@ -51,6 +51,7 @@ const Calendar_grid = () => {
       
     };
     fetchData();
+    
   }, []); // Пустой массив зависимостей означает вызов только один раз при монтировании
 
   const handleFilterTimeClick = (filter) => {
@@ -115,8 +116,9 @@ const Calendar_grid = () => {
           if (filterKey === 'Сегодня') return event.isToday;
           if (filterKey === 'Завтра') return event.isTomorrow;
           if (filterKey === 'На этой неделе') return event.isThisWeek;
-          if (filterKey === 'На выходных') return event.atWeekend;
+          if (filterKey === 'На следующей неделе') return event.atNextWeek;
           return true;
+          
         }
         return false;
       });
@@ -138,7 +140,7 @@ const Calendar_grid = () => {
   return (
     <div className="lg:flex gap-3 px-3 pb-24 bg-[#333033]">
       <div className="flex-1">
-        <ul className="flex flex-col sticky top-4 bg-[#272527] rounded-xl px-6 py-8 gap-2 text-[#999999] w-[200px] text-[15px]">
+        <ul className="flex flex-col sticky top-4 bg-[#272527] rounded-xl px-6 py-8 gap-2 text-[#999999] w-[240px] text-[15px]">
           
           {/* кнопки для временных тэгов из timeList */}
           <li className="text-xs text-[#454545] py-2">КОГДА?</li>

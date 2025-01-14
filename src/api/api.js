@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { parseISO, format, isToday, isTomorrow, isThisWeek, isWeekend } from 'date-fns';
+import { parseISO, format, isToday, isTomorrow, isThisWeek, addWeeks, startOfWeek, endOfWeek, isWithinInterval } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { ru } from 'date-fns/locale'; // Для локализации на русский язык
 
@@ -67,6 +67,12 @@ export const formatAirtableData = async () => {
     const barcelonaTime = toZonedTime(utcDate, 'Europe/Madrid'); // часовой пояс
     const formattedTime = format(barcelonaTime, "dd MMMM 'в' HH:mm", { locale: ru }); // формат
     const formattedTimeForColumns = format(barcelonaTime, "EEEE, dd.MM", { locale: ru }); // формат
+    const formattedWeekDay = format(barcelonaTime, "EEEE", { locale: ru }); // формат
+    const formattedDataDay = format(barcelonaTime, "dd", { locale: ru }); // формат
+    const formateddataMouth = format(barcelonaTime, "MM", { locale: ru }); // формат
+    const formatedDataTime = format(barcelonaTime, "HH:mm", { locale: ru }); // формат
+    
+    
 
     const cleanTitle = record.fields.Name_event?.replace(
       /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{2B50}\u{2764}\u{FE0F}\u{200B}\u{200C}\u{200D}\u{2060}\u{1F004}-\u{1F0CF}\u{1F34A}-]/gu,
@@ -79,13 +85,17 @@ export const formatAirtableData = async () => {
     const isTodayEvent = isToday(barcelonaTime);
     const isTomorrowEvent = isTomorrow(barcelonaTime);
     const isThisWeekEvent = isThisWeek(barcelonaTime, { weekStartsOn: 1 });
-    const atWeekendEvent = isWeekend(barcelonaTime) && isThisWeekEvent;
+    
+    
+      const nextWeekStart = startOfWeek(addWeeks(new Date(), 1), { weekStartsOn: 1 });
+      const nextWeekEnd = endOfWeek(nextWeekStart, { weekStartsOn: 1 });
+    const atNextWeekEvent = isWithinInterval(barcelonaTime, { start: nextWeekStart, end: nextWeekEnd });
 
     // Добавляем временные теги в Set timeList
     if (isTodayEvent) timeList.add("Сегодня");
     if (isTomorrowEvent) timeList.add("Завтра");
     if (isThisWeekEvent) timeList.add("На этой неделе");
-    if (atWeekendEvent) timeList.add("На выходных");
+    if (atNextWeekEvent) timeList.add("На следующей неделе");
 
     // Добавляем теги в глобальный набор
     if (Array.isArray(record.fields.web_site_tag)) {
@@ -96,17 +106,34 @@ export const formatAirtableData = async () => {
       title: cleanTitle,
       time: formattedTime,
       date: formattedTimeForColumns,
-      address: record.fields.adres_name?.trim() || '', // Проверка на undefined
+      WeekDay: formattedWeekDay,
+      dataDay: formattedDataDay,
+      dataMouth: formateddataMouth,
+      DataTime: formatedDataTime,
+
+      
+      placeName: record.fields.place_name 
+      ? record.fields.place_name[0]?.trim() || '' 
+      : '',    
+      placeAdres: record.fields.place_adres 
+      ? record.fields.place_adres[0]?.trim() || '' 
+      : '',    
+      placeLink: record.fields.place_link 
+      ? record.fields.place_link[0]?.trim() || '' 
+      : '',
+      
+
       description: record.fields.event_discriptoin?.trim() || '', // Проверка на undefined
       price: price,
       imageUrl: record.fields.img_url?.trim() || '', // Проверка на undefined
       isToday: isTodayEvent,
       isTomorrow: isTomorrowEvent,
       isThisWeek: isThisWeekEvent,
-      atWeekend: atWeekendEvent,
+      atNextWeek: atNextWeekEvent,
       eventTagList: record.fields.web_site_tag ? [...record.fields.web_site_tag, 'Все'] : ['Все'],
       eventExternalLink: record.fields.external_link?.trim() || '',
       eventProfeePagelLink: record.fields.profee_page_link?.trim() || '',
+
     };
   });
 };
