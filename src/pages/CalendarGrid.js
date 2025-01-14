@@ -138,9 +138,9 @@ const Calendar_grid = () => {
   };
 
   return (
-    <div className="lg:flex gap-3 px-3 pb-24 bg-[#333033]">
+    <div className="lg:flex gap-4 pr-2 pb-24 bg-[#333033]">
       <div className="flex-1">
-        <ul className="flex flex-col sticky top-4 bg-[#272527] rounded-xl px-6 py-8 gap-2 text-[#999999] w-[240px] text-[15px]">
+        <ul className="flex flex-col mt-40 sticky top-4 bg-[#272527] rounded-r-xl px-3 py-6 gap-1 text-[#999999] w-[160px] text-[14px]">
           
           {/* кнопки для временных тэгов из timeList */}
           <li className="text-xs text-[#454545] py-2">КОГДА?</li>
@@ -190,14 +190,21 @@ const Calendar_grid = () => {
           <li><span className="p-2 hover:text-white cursor-pointer">На улице</span></li>
         </ul>
       </div>
+      
+      <div class="py-12">
+        <div class="pb-10 pl-6">
+            <h1 class="text-5xl font-[600]">События Барселоны</h1>
+            <div class="py-1 text-xl font-[300] text-[#676767]">12 - 28 января</div>
+        </div>
   
       {/* Контейнер для карточек */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-0 border-l border-t border-[#fdfdfd]/10">
         {filteredEvents.map((event, index) => (
           <div key={index} onClick={() => handleCardClick(event)}>
             <EventCard {...event} />
           </div>
         ))}
+      </div>
       </div>
     </div>
   );
