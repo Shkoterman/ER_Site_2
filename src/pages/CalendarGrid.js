@@ -1,96 +1,208 @@
 import React, { useState, useEffect } from 'react';
-import { fetchAirtableData } from '../api/api';
+import { formatAirtableData, tagList, timeList } from '../api/api';
 import EventCard from '../components/EventCardV2';
-import { parseISO, format } from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
-import { ru } from 'date-fns/locale'; // Для локализации на русский язык
+import { useNavigate } from 'react-router-dom';
 import '../App.css'; // Импортируем файл стилей
 
-const Calendar_grid = () => {
-  const [events, setEvents] = useState([]); // Локальное состояние для карточек
 
-  // Обработчик нажатия на кнопку
-  const handleUpdateData = async () => {
-    const data = await fetchAirtableData(); // Получаем данные из Airtable
-    if (data) {
-      // Преобразуем данные из Airtable в формат для карточек
-      const formattedEvents = data.map((record) => {
-        // Преобразование времени
-        const utcDate = parseISO(record.fields.start_date); // Преобразуем ISO-строку в объект Date
-        const barcelonaTime = toZonedTime(utcDate, 'Europe/Madrid'); // Переводим время в Барселонский часовой пояс
-        const formattedTime = format(barcelonaTime, "dd MMMM 'в' HH:mm", { locale: ru }); // Форматируем дату и время
-        const removeEmoji = (text) => {
-          return text.replace(
-            /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{2B50}\u{2764}\u{FE0F}\u{200B}\u{200C}\u{200D}\u{2060}\u{1F004}-\u{1F0CF}]/gu, ""
-          );
-        };
-        const cleanTitle = removeEmoji(record.fields.Name_event || 'Без названия');
-        return {
-          title: cleanTitle,
-          time: (
-            <span>
-              {formattedTime}
-            </span>
-          ),
-          address:
-            record.fields.adress_link && record.fields.adres_name ? (
-              <span>
-                <strong>Адрес:</strong>{' '}
-                <a href={record.fields.adress_link} target="_blank" rel="noopener noreferrer">
-                  {record.fields.adres_name}
-                </a>
-              </span>
-            ) : (
-              ''
-            ),
-          description: record.fields.event_discriptoin || '',
-          price: record.fields.cost_all,
-          imageUrl: record.fields.img_url || '',
-          link: record.fields.Link || '#',
-        };
-      });
+
+const Calendar_grid = () => {
+  
+  const [events, setEvents] = useState([]); // Локальное состояние для карточек
+  const [filtersTimeSet, setFiltersTimeSet] = useState({}); // Состояние для активных фильтров времени 
+  const [filtersTagSet, setFiltersTagSet] = useState({}); // Состояние для активных фильтров тэгов 
+  const [filteredEvents, setFilteredEvents] = useState([]); // отфильтрованные события
+  //console.log(filteredEvents)
+
+  const navigate = useNavigate();
+
+  const handleCardClick = (event) => {
+    navigate('/event', { state: event });
+  };
+
+
+  useEffect(() => { // Вызов handleUpdateData при загрузке компонента
+    const fetchData = async () => {
+      const formattedEvents = await formatAirtableData();
       setEvents(formattedEvents); // Обновляем состояние
+      setFilteredEvents(formattedEvents); // По умолчанию отображаем все события
+      const initialTimeFilters = Array.from(timeList).reduce((acc, timeTag) => {
+        acc[timeTag] = false;
+        return acc;
+      }, {});
+      initialTimeFilters['Всегда'] = true;
+    
+      // Устанавливаем начальные значения для фильтров тегов
+      const initialTagFilters = Array.from(tagList).reduce((acc, tag) => {
+        acc[tag] = false;
+        return acc;
+      }, {});
+      initialTagFilters['Все'] = true;
+    
+      setFiltersTimeSet(initialTimeFilters);
+      setFiltersTagSet(initialTagFilters);
+      
+    };
+    fetchData();
+  }, []); // Пустой массив зависимостей означает вызов только один раз при монтировании
+
+  const handleFilterTimeClick = (filter) => {
+    if (filter === 'Всегда') {
+      // Если выбран "Всегда", все фильтры времени становятся активными
+      const newFilters = { 
+        ...filtersTimeSet, 
+        'Сегодня': true, 
+        'Завтра': true, 
+        'На этой неделе': true, 
+        'На выходных': true, 
+        'Всегда': true,
+      };
+      setFiltersTimeSet(newFilters);
+      applyFilters(newFilters, filtersTagSet);
+      //console.log(newFilters)
+    } else {
+      // Для других фильтров инвертируем состояние фильтра
+      setFiltersTimeSet((prevFilters) => {
+        const newFilters = { ...prevFilters, [filter]: !prevFilters[filter] };
+        // Если все фильтры времени (кроме "Всегда") одинаковые, включаем "Всегда"
+        const { Всегда, ...newFiltersCheck } = newFilters;
+        const allSame = Object.values(newFiltersCheck).every(val => val === true) || Object.values(newFiltersCheck).every(val => val === false);
+        newFilters['Всегда'] = allSame;
+        applyFilters(newFilters, filtersTagSet);
+        //console.log(newFilters)
+        return newFilters;
+        
+      });
+    }
+    
+  };
+
+  const handleFilterTagClick = (filter) => {
+    if (filter === 'Все') {
+      // Если выбран "Все", все теги становятся активными
+      const newFilters = {
+        ...Object.keys(filtersTagSet).reduce((acc, key) => {
+          acc[key] = true; // Устанавливаем все теги, включая "Все", в true
+          return acc;
+        }, {})
+      };
+      setFiltersTagSet(newFilters);
+      applyFilters(filtersTimeSet, newFilters);
+      //console.log(newFilters)
+    } else {
+      // Для других фильтров инвертируем состояние фильтра
+      setFiltersTagSet((prevFilters) => {
+        const newFilters = { ...prevFilters, [filter]: !prevFilters[filter] };
+        // Если все теги (кроме "Все") одинаковые, включаем "Все"
+        const { Все, ...newFiltersCheck } = newFilters;
+        const allSame = Object.values(newFiltersCheck).every(val => val === true) || Object.values(newFiltersCheck).every(val => val === false);
+        newFilters['Все'] = allSame;
+        applyFilters(filtersTimeSet, newFilters);
+        //console.log(newFilters)
+        return newFilters;
+      });
     }
   };
 
-  // Вызов handleUpdateData при загрузке компонента
-  useEffect(() => {
-    handleUpdateData();
-  }, []); // Пустой массив зависимостей означает вызов только один раз при монтировании
+  const applyFilters = (filtersTimeSet, filtersTagSet) => {
+    const filtered = events.filter((event) => {
+      // Фильтрация по времени
+      const isTimeMatch = filtersTimeSet['Всегда'] ||  Object.keys(filtersTimeSet).some((filterKey) => {
+        if (timeList.has(filterKey) && filtersTimeSet[filterKey]) {
+          if (filterKey === 'Сегодня') return event.isToday;
+          if (filterKey === 'Завтра') return event.isTomorrow;
+          if (filterKey === 'На этой неделе') return event.isThisWeek;
+          if (filterKey === 'На выходных') return event.atWeekend;
+          return true;
+        }
+        return false;
+      });
+
+      // Фильтрация по тегам
+      const isTagMatch = Object.entries(filtersTagSet).some(([filterKey, isActive]) => {
+        return isActive && event.eventTagList.includes(filterKey);
+      });
+
+      // Событие должно пройти оба фильтра (по времени и по тегам)
+      return isTimeMatch && isTagMatch;
+    });
+
+    // Обновляем отфильтрованные события
+    
+    setFilteredEvents(filtered);
+  };
 
   return (
     <div className="lg:flex gap-6 px-6 pb-24">
+      <div className="flex-1">
+        <ul className="flex flex-col sticky top-4 bg-[#171717] rounded-xl p-8 gap-2 text-[#999999] max-w-[230px]">
+          
+          {/* кнопки для временных тэгов из timeList */}
+          <li className="text-xs text-[#454545] py-2">КОГДА?</li>
+          {Array.from(timeList).map((timeTag, index) => (
+            <li key={index}>
+              <a
+                href="#"
+                className={`p-2 hover:text-white ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
+                onClick={() => handleFilterTimeClick(timeTag)}
+              >
+                {timeTag}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a
+              href="#"
+              className={`p-2 hover:text-white ${filtersTimeSet['Всегда'] ? 'font-bold' : ''}`}
+              onClick={() => handleFilterTimeClick('Всегда')}
+            >
+              Всегда
+            </a>
+          </li>
+          
+          {/* Отображаем кнопки для каждого тега из tagList */}
+          <li className="text-xs text-[#454545] mt-4 py-2">КАК?</li>
+          {Array.from(tagList).map((tag, index) => (
+            <li key={index}>
+              <a
+                href="#"
+                className={`p-2 hover:text-white ${filtersTagSet[tag] ? 'font-bold' : ''}`}
+                onClick={() => handleFilterTagClick(tag)}
+              >
+                {tag}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a
+              href="#"
+              className={`p-2 hover:text-white ${filtersTagSet['Все'] ? 'font-bold' : ''}`}
+              onClick={() => handleFilterTagClick('Все')}
+            >
+              Все
+            </a>
+          </li>
 
-      <div class="flex-1">
-        <ul class="flex flex-col sticky top-4 bg-[#171717] rounded-xl p-8 gap-2 text-[#999999] max-w-[220px]">
-            <li class="text-xs text-[#454545] py-2">КОГДА?</li>
-            <li><a href="" class="p-2 hover:text-white">Сегодня</a></li>
-            <li><a href="" class="p-2 hover:text-white">Завтра</a></li>
-            <li><a href="" class="p-2 hover:text-white">На этой неделе</a></li>
-            <li><a href="" class="p-2 hover:text-white">На выходных</a></li>
-            
-            <li class="text-xs text-[#454545] mt-4 py-2">КАК?</li>
-            <li><a href="" class="p-2 hover:text-white">С детьми</a></li>
-            <li><a href="" class="p-2 hover:text-white">Спортивно</a></li>
-            <li><a href="" class="p-2 hover:text-white">Познавательно</a></li>
-            <li><a href="" class="p-2 hover:text-white">Весело</a></li>
-            <li><a href="" class="p-2 hover:text-white">Продуктивно</a></li>
-      
-            <li class="text-xs text-[#454545] mt-4 py-2">ГДЕ?</li>
-            <li><a href="" class="p-2 hover:text-white">HotSpot</a></li>
-            <li><a href="" class="p-2 hover:text-white">В баре</a></li>
-            <li><a href="" class="p-2 hover:text-white">На улице</a></li>
+          <li className="text-xs text-[#454545] mt-4 py-2">ГДЕ?</li>
+          <li><a href="#" className="p-2 hover:text-white">HotSpot</a></li>
+          <li><a href="#" className="p-2 hover:text-white">В баре</a></li>
+          <li><a href="#" className="p-2 hover:text-white">На улице</a></li>
         </ul>
       </div>
 
       {/* Контейнер для карточек */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-        {events.map((event, index) => (
-          <EventCard key={index} {...event} />
+      {filteredEvents.map((event, index) => (
+          <div key={index} onClick={() => handleCardClick(event)}>
+            <EventCard {...event} />
+          </div>
         ))}
       </div>
     </div>
   );
+
+  
+
 };
 
 export default Calendar_grid;

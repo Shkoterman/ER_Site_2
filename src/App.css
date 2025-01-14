@@ -325,3 +325,54 @@ button, .App-link {
   align-items: center;
   margin-top: 20px;
 }
+
+
+/* --- ДЛЯ eventPage --- */
+
+.eventPage-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.eventPage-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.eventPage-image {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.eventPage-time,
+.eventPage-address,
+.eventPage-description,
+.eventPage-price {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.eventPage-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.eventPage-tag {
+  background-color: #444;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}

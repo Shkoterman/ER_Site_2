@@ -34,7 +34,7 @@ return (
                 {time && <p className="text-xs py-2 text-[#676767] font-[600]">{time} | HotSpot</p>}
             </div>
             <div class="flex-none text-right">
-                {price && <p className="text-lg pb-1 font-[600]"> {price}€ </p>}
+                {price && <p className="text-lg pb-1 font-[600]"> {price} </p>}
             </div>
         </div>
     </div>
