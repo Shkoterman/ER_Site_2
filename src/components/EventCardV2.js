@@ -6,38 +6,48 @@ import '../App.css'; // Импортируем стили из App.css
 
 const EventCard = ({ title, time, address, description, price, imageUrl, placeLink }) => {
     
-    
+    // bg-gradient-to-t from-[#333033] from-30% via-[#333033]/5 via-60% to-[#333033]/30 to-100%
     
 return (
-<div className="p-0 rounded rounded-md max-w-[560px] bg-[#171717]/70 hover:bg-[#000000] flex">
+<div className="p-0 max-w-[560px] h-[480px]  hover:bg-[#000000]/40 flex flex-col justify-between border-r border-t border-[#fdfdfd]/10 relative overflow-hidden pb-4">
     
-    {/* Изображение */}
     
-    <div className="h-[200px] w-1/3 bg-cover bg-center rounded-md flex flex-col items-left justify-end opacity-60 hover:opacity-100 cursor-pointer" style={{ backgroundImage: `url(${imageUrl})` }}>
-    <div className="text-right p-2">
-        <span className="inline-block bg-[#111111]/90 px-3 py-1 rounded-full text-xs">весь месяц</span>
-    </div>
-    </div>
     
     {/* Текстовая часть карточки */}
     
-    <div className="h-48 w-2/3 flex flex-col justify-between px-4">
-        <h3 className="text-white/80 text-[20px] font-[600] text-left leading-[22px] pt-2.5 pb-2">{title}</h3>
-        {description && (
-          <div className="flex-1 overflow-hidden text-left text-[13px] leading-[17px] text-[#676767] font-[300] tracking-wide">
-            <p>{description}</p>
-          </div>
-        )}
+    <div className="h-full flex flex-col justify-between p-2 pt-0">
+        
+        <div className="h-40 px-4">
+            <div class="text-[48px] leading-[48px] font-[700] pt-8">
+                14<span class="text-lg font-[200] px-1 text-[#676767]">/01</span>
+            </div>
+            <div class="text-[11px] font-[500] -pt-2">ВТОРНИК</div>
+        </div>
     
-        <div className="flex">
+        <h3 className="text-[#FEFEFE] text-[19px] font-[700] text-left leading-[22px] pt-6 pb-2 px-4 uppercase tracking-wide">{title}</h3>
+        
+          <div className="flex-1 overflow-hidden text-left text-[14px] leading-[17px] text-[#676767] font-[300] tracking-wide px-4">
+            {description && ( <p>{description}</p>    )}
+          </div>
+     
+    
+        <div className="flex justify-between px-4">
             <div className="flex-1">
-                {time && <p className="text-xs py-2 text-[#676767] font-[600]">{time} | HotSpot</p>}
+                {time && <p className="text-sm leading-[16px] py-0 text-[#676767] font-[600]">11:00<br/> HotSpot</p>}
             </div>
             <div className="flex-none text-right">
-                {price && <p className="text-lg pb-1 font-[600]"> {price} </p>}
+                {price && <div className="bg-[#E1B71C] text-[#272527] px-6 py-1 rounded-full text-lg font-[800]"> {price} </div>}
             </div>
         </div>
     </div>
+    
+     {/* Изображение */}
+    
+    <img src={imageUrl} class="object-cover w-[160px] h-[180px] absolute -top-0 right-0 z-1 rounded-bl-full mr-0 mt-0"/>
+      <div className="text-right p-2">
+        <span className="inline-block bg-[#111111]/90 px-3 py-1 rounded-full text-xs hidden">весь месяц</span>
+    </div>
+    
     
     
     
