@@ -56,14 +56,10 @@ const Calendar_grid = () => {
   const handleFilterTimeClick = (filter) => {
     if (filter === 'Всегда') {
       // Если выбран "Всегда", все фильтры времени становятся активными
-      const newFilters = { 
-        ...filtersTimeSet, 
-        'Сегодня': true, 
-        'Завтра': true, 
-        'На этой неделе': true, 
-        'На выходных': true, 
-        'Всегда': true,
-      };
+      const newFilters = Object.keys(filtersTimeSet).reduce((acc, key) => {
+        acc[key] = true; // Устанавливаем каждый фильтр в true
+        return acc;
+      }, {});
       setFiltersTimeSet(newFilters);
       applyFilters(newFilters, filtersTagSet);
       //console.log(newFilters)
@@ -148,58 +144,54 @@ const Calendar_grid = () => {
           <li className="text-xs text-[#454545] py-2">КОГДА?</li>
           {Array.from(timeList).map((timeTag, index) => (
             <li key={index}>
-              <a
-                href="#"
-                className={`p-2 hover:text-white ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
+              <span
+                className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
                 onClick={() => handleFilterTimeClick(timeTag)}
               >
                 {timeTag}
-              </a>
+              </span>
             </li>
           ))}
           <li>
-            <a
-              href="#"
-              className={`p-2 hover:text-white ${filtersTimeSet['Всегда'] ? 'font-bold' : ''}`}
+            <span
+              className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet['Всегда'] ? 'font-bold' : ''}`}
               onClick={() => handleFilterTimeClick('Всегда')}
             >
               Всегда
-            </a>
+            </span>
           </li>
           
           {/* Отображаем кнопки для каждого тега из tagList */}
           <li className="text-xs text-[#454545] mt-4 py-2">КАК?</li>
           {Array.from(tagList).map((tag, index) => (
             <li key={index}>
-              <a
-                href="#"
-                className={`p-2 hover:text-white ${filtersTagSet[tag] ? 'font-bold' : ''}`}
+              <span
+                className={`p-2 hover:text-white cursor-pointer ${filtersTagSet[tag] ? 'font-bold' : ''}`}
                 onClick={() => handleFilterTagClick(tag)}
               >
                 {tag}
-              </a>
+              </span>
             </li>
           ))}
           <li>
-            <a
-              href="#"
-              className={`p-2 hover:text-white ${filtersTagSet['Все'] ? 'font-bold' : ''}`}
+            <span
+              className={`p-2 hover:text-white cursor-pointer ${filtersTagSet['Все'] ? 'font-bold' : ''}`}
               onClick={() => handleFilterTagClick('Все')}
             >
               Все
-            </a>
+            </span>
           </li>
-
+  
           <li className="text-xs text-[#454545] mt-4 py-2">ГДЕ?</li>
-          <li><a href="#" className="p-2 hover:text-white">HotSpot</a></li>
-          <li><a href="#" className="p-2 hover:text-white">В баре</a></li>
-          <li><a href="#" className="p-2 hover:text-white">На улице</a></li>
+          <li><span className="p-2 hover:text-white cursor-pointer">HotSpot</span></li>
+          <li><span className="p-2 hover:text-white cursor-pointer">В баре</span></li>
+          <li><span className="p-2 hover:text-white cursor-pointer">На улице</span></li>
         </ul>
       </div>
-
+  
       {/* Контейнер для карточек */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-      {filteredEvents.map((event, index) => (
+        {filteredEvents.map((event, index) => (
           <div key={index} onClick={() => handleCardClick(event)}>
             <EventCard {...event} />
           </div>
@@ -207,6 +199,7 @@ const Calendar_grid = () => {
       </div>
     </div>
   );
+  
 
   
 
