@@ -18,7 +18,7 @@ const Calendar_grid = () => {
 
   const handleCardClick = (event) => {
     if (event.eventExternalLink !== "") {
-      window.open(event.eventExternalLink, '_blank'); // Открывает внешнюю ссылку в новой вкладке
+      navigate('/event', { state: event }); // Переход на страницу события
     } if (event.eventProfeePagelLink !== "") {
       window.open(event.eventProfeePagelLink, '_blank'); // Открывает внешнюю ссылку в новой вкладке
     } else {

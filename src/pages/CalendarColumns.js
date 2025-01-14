@@ -10,7 +10,7 @@ const CalendarColumns = () => {
 
   const handleCardClick = (event) => {
     if (event.eventExternalLink !== "") {
-      window.open(event.eventExternalLink, '_blank'); // Открывает внешнюю ссылку в новой вкладке
+      navigate('/event', { state: event }); // Переход на страницу события
     } if (event.eventProfeePagelLink !== "") {
       window.open(event.eventProfeePagelLink, '_blank'); // Открывает внешнюю ссылку в новой вкладке
     } else {
@@ -37,7 +37,6 @@ const CalendarColumns = () => {
 
   // Форматирование даты с проверкой на валидность
   const formatDate = (dateStr) => {
-    const date = new Date(dateStr);
     const [day, datePart] = dateStr.split(', ');
     const formattedDay = day.charAt(0).toUpperCase() + day.slice(1); // Заглавная буква в день недели
     return { day: formattedDay, datePart };
@@ -61,7 +60,7 @@ const CalendarColumns = () => {
                 {/* Рендерим карточки для данной даты */}
                 <div className="flex flex-col gap-2 mt-4">
                   {groupedEvents[date].map((event, index) => {
-                    const { day, datePart } = formatDate(event.date);
+                    //const { day, datePart } = formatDate(event.date);
 
                     return (
                       // Оборачиваем в div, чтобы добавить обработчик onClick

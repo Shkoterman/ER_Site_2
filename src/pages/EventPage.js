@@ -7,8 +7,8 @@ const EventPage = () => {
   const event = location.state; // Получаем объект события через state
 
   const handleButtonClick = () => {
-    if (event.eventProfeePagelLink) {
-      window.open(event.eventProfeePagelLink, '_blank'); // Открывает ссылку в новой вкладке
+    if (event.eventExternalLink) {
+      window.open(event.eventExternalLink, '_blank'); // Открывает ссылку в новой вкладке
     } else {
       alert('Ссылка не найдена'); // Сообщение, если ссылка отсутствует
     }
