@@ -1,5 +1,8 @@
 import React from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+//import { Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import ControlPanel from './pages/ControlPanel';
+import Login from './pages/Login'; // Страница логина (если есть)
 import About from './pages/About';
 import CalendarGrid from './pages/CalendarGrid';
 import CalendarColumns from './pages/CalendarColumns';
@@ -33,6 +36,8 @@ const App = () => {
         <Route path="/CalendarGrid" element={<CalendarGrid />} />
         <Route path="/CalendarColumns" element={<CalendarColumns />} />
         <Route path="/event" element={<EventPage />} /> {/* Страница события */}
+        <Route path="/controlpanel" element={<ControlPanel />} />
+        <Route path="/login" element={<Login/>} />
       </Routes>
       <Footer />
     </div>
