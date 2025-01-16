@@ -87,7 +87,7 @@ export const formatAirtableData = async () => {
     // это всё для "и ещё 2 дня"    
     const startDate = record.fields.start_date ? new Date(record.fields.start_date) : null;
     const stopDate = record.fields.stop_date ? new Date(record.fields.stop_date) : null;
-    const dayDifference = Math.ceil((stopDate - startDate) / (1000 * 60 * 60 * 24));
+    const dayDifference = Math.ceil(((stopDate - startDate) / (1000 * 60 * 60 * 24))-1);
     let formatedDataStr = record.fields.str_date;
     if (startDate && stopDate && startDate.getDate() !== stopDate.getDate()) {
       if (formatedDataStr === undefined) {
@@ -104,6 +104,7 @@ export const formatAirtableData = async () => {
     } else {
       formatedDataStr = "";
     }
+    
     // чистка имоджей
     const formateTitle = record.fields.Name_event?.replace(
       /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{2B50}\u{2764}\u{FE0F}\u{200B}\u{200C}\u{200D}\u{2060}\u{1F004}-\u{1F0CF}\u{1F34A}-]/gu,
@@ -111,7 +112,6 @@ export const formatAirtableData = async () => {
     )?.trim() || ''; // Проверка на undefined
 
     //описание 
-
     const formatedShortDescription = record.fields.short_description !== undefined
       ? record.fields.short_description
       : record.fields.event_discriptoin;

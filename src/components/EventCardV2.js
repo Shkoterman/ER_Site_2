@@ -4,7 +4,7 @@ import '../App.css'; // Импортируем стили из App.css
    
          
 
-const EventCard = ({ title, time, address, shortDescription, price, imageUrl, weekDay, dataDay, dataMouth, dataTime, placeLink, placeAdres, placeName }) => {
+const EventCard = ({ title, time, address, shortDescription, price, imageUrl, weekDay, dataDay, dataMouth, dataTime, placeLink, placeAdres, placeName, dataStr }) => {
     
     // bg-gradient-to-t from-[#333033] from-30% via-[#333033]/5 via-60% to-[#333033]/30 to-100%
     
@@ -50,7 +50,7 @@ return (
     
     {imageUrl && (
     
-   <img src={imageUrl} class="object-cover w-[145px] h-[145px] absolute -top-0 right-0 z-1 rounded-bl-full mr-0 mt-0 opacity-90"/>
+   <img src={imageUrl} class="object-cover w-[145px] h-[145px] absolute -top-0 right-0 z-1 rounded-bl-full mr-0 mt-0 opacity-90" alt = "..."/>
         
     
     )}

@@ -26,8 +26,6 @@ const Calendar_grid = () => {
     }
   };
   
-
-
   useEffect(() => { // Вызов handleUpdateData при загрузке компонента
     const fetchData = async () => {
       const formattedEvents = await formatAirtableData();
