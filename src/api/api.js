@@ -14,6 +14,8 @@ let cachedData = null;
 let tagList = new Set(); // набор тэгов 
 let timeList = new Set(); // набор времён (сегодня завтра вот это всё) 
 let globalTimeSpan = String();
+timeList.add("Всегда");
+tagList.add("Все")
 
 export const fetchAirtableData = async () => {  // получаю данные из Airtable
   try {
@@ -73,12 +75,13 @@ export const formatAirtableData = async () => {
     // Время
     const utcDate = parseISO(record.fields.start_date); // парс в ISO
     const barcelonaTime = toZonedTime(utcDate, 'Europe/Madrid'); // часовой пояс
-    const formattedTime = format(barcelonaTime, "dd MMMM 'в' HH:mm", { locale: ru }); // формат
+    let formattedTime = format(barcelonaTime, "dd MMMM 'в' HH:mm", { locale: ru }); // формат
     const formattedTimeForColumns = format(barcelonaTime, "EEEE, dd.MM", { locale: ru }); // формат
     const formattedWeekDay = format(barcelonaTime, "EEEE", { locale: ru }); // формат
     const formattedDataDay = format(barcelonaTime, "dd", { locale: ru }); // формат
     const formateddataMouth = format(barcelonaTime, "MM", { locale: ru }); // формат
-         
+    //let formatedFromToDate = String(); // с по
+          
     //чек на показываение времени
     let formatedDataTime = format(barcelonaTime, "HH:mm", { locale: ru }); // формат
     const dontShowTime = record.fields.dont_show_time || false;
@@ -87,9 +90,15 @@ export const formatAirtableData = async () => {
     // это всё для "и ещё 2 дня"    
     const startDate = record.fields.start_date ? new Date(record.fields.start_date) : null;
     const stopDate = record.fields.stop_date ? new Date(record.fields.stop_date) : null;
-    const dayDifference = Math.ceil(((stopDate - startDate) / (1000 * 60 * 60 * 24))-1);
+    
     let formatedDataStr = record.fields.str_date;
     if (startDate && stopDate && startDate.getDate() !== stopDate.getDate()) {
+      if (format(startDate, "MMMM") === format(stopDate, "MMMM")) {
+        formattedTime = format(startDate, "dd — ", { locale: ru }) + format(stopDate, "dd MMMM", { locale: ru }); // формат с по
+      } else {
+        formattedTime = format(startDate, "dd MMMM — ", { locale: ru }) + format(stopDate, "dd MMMM", { locale: ru }); // формат с по
+      }
+      const dayDifference = Math.ceil(((stopDate - startDate) / (1000 * 60 * 60 * 24))-1);
       if (formatedDataStr === undefined) {
         // Функция для правильного склонения слова "день"
         const getDayWord = (num) => {
@@ -146,6 +155,7 @@ export const formatAirtableData = async () => {
       dataMouth: formateddataMouth,
       dataTime: formatedDataTime,
       dataStr: formatedDataStr,
+      //FromToDate: formatedFromToDate,
       
       placeName: record.fields.place_name 
       ? record.fields.place_name[0]?.trim() || '' 
@@ -159,7 +169,8 @@ export const formatAirtableData = async () => {
       shortDescription: formatedShortDescription,
       description: record.fields['Описание']?.trim() || '', // Проверка на undefined
       price: formatedPrice,
-      imageUrl: record.fields.img_url?.trim() || '', // Проверка на undefined
+      imageUrl: record.fields.image?.[0]?.url?.trim() || '', // Проверка на undefined
+      //imageUrl: record.fields.img_url?.trim() || '', // Проверка на undefined
       isToday: isTodayEvent,
       isTomorrow: isTomorrowEvent,
       isThisWeek: isThisWeekEvent,

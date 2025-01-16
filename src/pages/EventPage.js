@@ -1,23 +1,12 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate  } from 'react-router-dom';
 import { marked } from 'marked';
 import '../App.css'; // Импортируем стили
 
-const cleanMarkdown = (markdown) => {
-  // Убираем пробелы перед закрывающими знаками Markdown
-  return markdown
-    //.replace(/\s\*\*/g, '** ')   // Заменяем пробел перед ** на корректный
-    //.replace(/\s~~/g, '~~ ')      // Заменяем пробел перед ~~ на корректный
-    //.replace(/\s_/g, '_ ')
-    //.replace(/\s--/g, '-- ');      // Заменяем пробел перед -- на корректный
-    
-};
-
 const EventPage = () => {
-  
+  const navigate = useNavigate();
   const location = useLocation();
   const event = location.state; // Получаем объект события через state
-  const cleanedDescription = cleanMarkdown(event.description || '');
 
   const handleEventButtonClick = () => {
     if (event.eventExternalLink) {
@@ -34,10 +23,19 @@ const EventPage = () => {
       alert('Ссылка не найдена'); // Сообщение, если ссылка отсутствует
     }
   };
-  console.log(event.description)
+  
+  const handleBackButtonClick = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="eventPage-container">
-      
+      <button 
+        className="eventPage-button" 
+        onClick={handleBackButtonClick}
+      >
+        &lt;
+      </button>
       <h1 className="eventPage-title">{event.title}</h1>
 
       <img
@@ -45,7 +43,7 @@ const EventPage = () => {
         alt={event.title}
         className="eventPage-image"
       />
-      <p className="eventPage-time">Когда: {event.time}</p>
+      <p className="eventPage-time">{event.time}</p>
 
       {event.placeLink?.length > 0 ? (
         event.placeAdres?.length > 0 ? (
@@ -53,34 +51,34 @@ const EventPage = () => {
           className="eventPage-address-button"
           onClick={() => handleAddressClick(event.placeName, event.placeAdres)}
         >
-          Где: {event.placeName}, {event.placeAdres}
+          {event.placeName}, {event.placeAdres}
         </button>
       ) : (
         <button
           className="eventPage-address-button"
           onClick={() => handleAddressClick(event.placeName, event.placeAdres)}
         >
-          Где: {event.placeName}
+          {event.placeName}
         </button>))
            
       : (
         event.placeAdres?.length > 0 ? (
           <p className="eventPage-address">
-            Где: {event.placeName}, {event.placeAdres}
+            {event.placeName}, {event.placeAdres}
           </p>
         ) : (
           <p className="eventPage-address">
-            Где: {event.placeName}
+            {event.placeName}
           </p>
         )
       )}
       
       <p 
         className="eventPage-description" 
-        dangerouslySetInnerHTML={{ __html: marked(cleanedDescription) }} 
+        dangerouslySetInnerHTML={{ __html: marked(event.description) }} 
       />     
 
-      <p className="eventPage-price">Цена: {event.price}</p>
+      <p className="eventPage-price">{event.price}</p>
 
       {/* Кнопка для открытия ссылки */}
       <button 

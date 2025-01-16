@@ -190,12 +190,6 @@ const Calendar_grid = () => {
         </ul>
       </div>
       
-
-
-
-
-
-
       <div class="py-12">
         <div class="pb-2 lg:pl-6">
             <h1 class="text-5xl font-[600] text-[#FDFCF6]">События Барселоны</h1>
@@ -204,16 +198,30 @@ const Calendar_grid = () => {
 
         <div class="lg:px-6 pt-4 pb-4 sticky z-20 bg-[#222221] top-0 overflow-x-scroll">
             <ul class="flex gap-3 text-center text-sm text-[#9c9c9c] whitespace-nowrap">
-                <li class="min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] hover:text-white cursor-pointer bg-white text-[#333333] font-[500] ${filtersTagSet['Все'] ? 'bg-none' : ''}" onClick={() => handleFilterTagClick('Все')}>Все</li>
-      
+                
+            
+            
+            
+            {/*временое */}
             {Array.from(timeList).map((timeTag, index) => (
-            <li key={index} class="px-3 py-1.5 border rounded-full border-[#9c9c9c] hover:text-white cursor-pointer">{timeTag}</li>
+              <li key={index} 
+              //className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
+              className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer  text-[#666666] font-[500] ${filtersTimeSet[timeTag] ? 'min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-white hover:text-black cursor-pointer  text-[#333333] font-[500]' : ''}`}
+              onClick={() => handleFilterTimeClick(timeTag)}
+              >{timeTag}</li>
             ))}
 
+            {/*сущностное */}
+            {Array.from(tagList).map((tag, index) => (
+              <li key={index} 
+              //className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
+              className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer  text-[#666666] font-[500] ${filtersTagSet[tag] ? 'min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-white hover:text-black cursor-pointer  text-[#333333] font-[500]' : ''}`}
+              onClick={() => handleFilterTagClick(tag)}
+              >{tag}</li>
+            ))}
+            
             </ul>
         </div>
-
-
 
       {/* Контейнер для карточек */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border-l border-t border-[#fdfdfd]/10 lg:mx-6 rounded-tl-2xl mt-4 lg:mt-0">
