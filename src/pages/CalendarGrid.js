@@ -138,9 +138,9 @@ const Calendar_grid = () => {
   };
 
   return (
-    <div className="lg:flex gap-4 pr-2 pb-24 bg-[#333033]">
-      <div className="flex-1">
-        <ul className="flex flex-col mt-40 sticky top-4 bg-[#272527] rounded-r-xl px-3 py-6 gap-1 text-[#999999] w-[160px] text-[14px]">
+    <div className="lg:flex flex-col gap-8 p-4 pb-24 bg-[#222221] text-[#70706c]">
+      <div className="flex-1 hidden">
+        <ul className="flex flex-col mt-40 sticky top-4 bg-[#222221] rounded-r-xl px-3 py-6 gap-1 text-[#999999] w-[180px] text-[14px]">
           
           {/* кнопки для временных тэгов из timeList */}
           <li className="text-xs text-[#454545] py-2">КОГДА?</li>
@@ -191,14 +191,33 @@ const Calendar_grid = () => {
         </ul>
       </div>
       
+
+
+
+
+
+
       <div class="py-12">
-        <div class="pb-10 pl-6">
-            <h1 class="text-5xl font-[600]">События Барселоны</h1>
-            <div class="py-1 text-xl font-[300] text-[#676767]">12 - 28 января</div>
+        <div class="pb-2 lg:pl-6">
+            <h1 class="text-5xl font-[600] text-[#FDFCF6]">События Барселоны</h1>
+            <div class="pt-2 lg:pt-0 py-1 text-2xl font-[300] text-[#676767]">12 - 28 января</div>
         </div>
-  
+
+        <div class="lg:px-6 pt-4 pb-4 sticky z-20 bg-[#222221] top-0 overflow-x-scroll">
+            <ul class="flex gap-3 text-center text-sm text-[#9c9c9c] whitespace-nowrap">
+                <li class="min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] hover:text-white cursor-pointer bg-white text-[#333333] font-[500] ${filtersTagSet['Все'] ? 'bg-none' : ''}" onClick={() => handleFilterTagClick('Все')}>Все</li>
+      
+            {Array.from(timeList).map((timeTag, index) => (
+            <li key={index} class="px-3 py-1.5 border rounded-full border-[#9c9c9c] hover:text-white cursor-pointer">{timeTag}</li>
+            ))}
+
+            </ul>
+        </div>
+
+
+
       {/* Контейнер для карточек */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-0 border-l border-t border-[#fdfdfd]/10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border-l border-t border-[#fdfdfd]/10 lg:mx-6 rounded-tl-2xl mt-4 lg:mt-0">
         {filteredEvents.map((event, index) => (
           <div key={index} onClick={() => handleCardClick(event)}>
             <EventCard {...event} />
