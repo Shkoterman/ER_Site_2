@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { formatAirtableData, tagList, timeList } from '../api/api';
+import { formatAirtableData, tagList, timeList, globalTimeSpan } from '../api/api';
 import EventCard from '../components/EventCardV2';
 import { useNavigate } from 'react-router-dom';
 import '../App.css'; // Импортируем файл стилей
@@ -107,7 +107,7 @@ const Calendar_grid = () => {
       });
     }
   };
-
+  
   const applyFilters = (filtersTimeSet, filtersTagSet) => {
     const filtered = events.filter((event) => {
       // Фильтрация по времени
@@ -120,6 +120,7 @@ const Calendar_grid = () => {
           return true;
           
         }
+        console.log(event.shortDescription);
         return false;
       });
 
@@ -183,18 +184,18 @@ const Calendar_grid = () => {
               Все
             </span>
           </li>
-  
+          {/* юля сказала убрать покачто 
           <li className="text-xs text-[#454545] mt-4 py-2">ГДЕ?</li>
           <li><span className="p-2 hover:text-white cursor-pointer">HotSpot</span></li>
           <li><span className="p-2 hover:text-white cursor-pointer">В баре</span></li>
-          <li><span className="p-2 hover:text-white cursor-pointer">На улице</span></li>
+          <li><span className="p-2 hover:text-white cursor-pointer">На улице</span></li>*/}
         </ul>
       </div>
       
       <div class="py-12">
         <div class="pb-10 pl-6">
             <h1 class="text-5xl font-[600]">События Барселоны</h1>
-            <div class="py-1 text-xl font-[300] text-[#676767]">12 - 28 января</div>
+            <div class="py-1 text-xl font-[300] text-[#676767]">{globalTimeSpan}</div>
         </div>
   
       {/* Контейнер для карточек */}

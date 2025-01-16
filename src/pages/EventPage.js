@@ -1,10 +1,23 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { marked } from 'marked';
 import '../App.css'; // Импортируем стили
 
+const cleanMarkdown = (markdown) => {
+  // Убираем пробелы перед закрывающими знаками Markdown
+  return markdown
+    //.replace(/\s\*\*/g, '** ')   // Заменяем пробел перед ** на корректный
+    //.replace(/\s~~/g, '~~ ')      // Заменяем пробел перед ~~ на корректный
+    //.replace(/\s_/g, '_ ')
+    //.replace(/\s--/g, '-- ');      // Заменяем пробел перед -- на корректный
+    
+};
+
 const EventPage = () => {
+  
   const location = useLocation();
   const event = location.state; // Получаем объект события через state
+  const cleanedDescription = cleanMarkdown(event.description || '');
 
   const handleEventButtonClick = () => {
     if (event.eventExternalLink) {
@@ -21,7 +34,7 @@ const EventPage = () => {
       alert('Ссылка не найдена'); // Сообщение, если ссылка отсутствует
     }
   };
-  console.log(event.placeLink)
+  console.log(event.description)
   return (
     <div className="eventPage-container">
       
@@ -61,7 +74,12 @@ const EventPage = () => {
           </p>
         )
       )}
-      <p className="eventPage-description">{event.description}</p>
+      
+      <p 
+        className="eventPage-description" 
+        dangerouslySetInnerHTML={{ __html: marked(cleanedDescription) }} 
+      />     
+
       <p className="eventPage-price">Цена: {event.price}</p>
 
       {/* Кнопка для открытия ссылки */}

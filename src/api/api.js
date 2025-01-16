@@ -13,7 +13,7 @@ const VIEW_NAME = "for_web_calendar";
 let cachedData = null;
 let tagList = new Set(); // набор тэгов 
 let timeList = new Set(); // набор времён (сегодня завтра вот это всё) 
-
+let globalTimeSpan = String();
 
 export const fetchAirtableData = async () => {  // получаю данные из Airtable
   try {
@@ -60,6 +60,14 @@ export const checkCachedData = async () => {  // чек, есть ли кэши�
 export const formatAirtableData = async () => {
   await checkCachedData(); // чек
   const data = cachedData;
+  
+  //строка под события с по
+  const firstDate = parseISO(data[0].fields.start_date);
+  const lastDate = parseISO(data[data.length - 1].fields.start_date);
+  const firstBarcelonaTime = toZonedTime(firstDate, 'Europe/Madrid');
+  const lastBarcelonaTime = toZonedTime(lastDate, 'Europe/Madrid');
+  globalTimeSpan = `${format(firstBarcelonaTime, "dd MMMM", { locale: ru })} - ${format(lastBarcelonaTime, "dd MMMM", { locale: ru })}`;
+  
 
   return data.map((record) => {
     // Время
@@ -70,28 +78,55 @@ export const formatAirtableData = async () => {
     const formattedWeekDay = format(barcelonaTime, "EEEE", { locale: ru }); // формат
     const formattedDataDay = format(barcelonaTime, "dd", { locale: ru }); // формат
     const formateddataMouth = format(barcelonaTime, "MM", { locale: ru }); // формат
-    const formatedDataTime = format(barcelonaTime, "HH:mm", { locale: ru }); // формат
-    
-    
+         
+    //чек на показываение времени
+    let formatedDataTime = format(barcelonaTime, "HH:mm", { locale: ru }); // формат
+    const dontShowTime = record.fields.dont_show_time || false;
+    if (dontShowTime) formatedDataTime = "";
 
-    const cleanTitle = record.fields.Name_event?.replace(
+    // это всё для "и ещё 2 дня"    
+    const startDate = record.fields.start_date ? new Date(record.fields.start_date) : null;
+    const stopDate = record.fields.stop_date ? new Date(record.fields.stop_date) : null;
+    const dayDifference = Math.ceil((stopDate - startDate) / (1000 * 60 * 60 * 24));
+    let formatedDataStr = record.fields.str_date;
+    if (startDate && stopDate && startDate.getDate() !== stopDate.getDate()) {
+      if (formatedDataStr === undefined) {
+        // Функция для правильного склонения слова "день"
+        const getDayWord = (num) => {
+          if (num % 10 === 1 && num % 100 !== 11) return "день";
+          if ([2, 3, 4].includes(num % 10) && ![12, 13, 14].includes(num % 100)) return "дня";
+          return "дней";
+        };
+
+        formatedDataStr = `и ещё ${dayDifference} ${getDayWord(dayDifference)}`;
+      } else {
+      }
+    } else {
+      formatedDataStr = "";
+    }
+    // чистка имоджей
+    const formateTitle = record.fields.Name_event?.replace(
       /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{2B50}\u{2764}\u{FE0F}\u{200B}\u{200C}\u{200D}\u{2060}\u{1F004}-\u{1F0CF}\u{1F34A}-]/gu,
       ""
     )?.trim() || ''; // Проверка на undefined
 
-    const price = record.fields.cost_all === 0 ? "Бесплатно" : record.fields.cost_all + " €";
+    //описание 
+
+    const formatedShortDescription = record.fields.short_description !== undefined
+      ? record.fields.short_description
+      : record.fields.event_discriptoin;
+    
+    const formatedPrice = record.fields.cost_all === 0 ? "Бесплатно" : record.fields.cost_all + " €";
 
     // Булевые поля времени
     const isTodayEvent = isToday(barcelonaTime);
     const isTomorrowEvent = isTomorrow(barcelonaTime);
     const isThisWeekEvent = isThisWeek(barcelonaTime, { weekStartsOn: 1 });
     
-    
-      const nextWeekStart = startOfWeek(addWeeks(new Date(), 1), { weekStartsOn: 1 });
-      const nextWeekEnd = endOfWeek(nextWeekStart, { weekStartsOn: 1 });
-    const atNextWeekEvent = isWithinInterval(barcelonaTime, { start: nextWeekStart, end: nextWeekEnd });
-
     // Добавляем временные теги в Set timeList
+    const nextWeekStart = startOfWeek(addWeeks(new Date(), 1), { weekStartsOn: 1 });
+    const nextWeekEnd = endOfWeek(nextWeekStart, { weekStartsOn: 1 });
+    const atNextWeekEvent = isWithinInterval(barcelonaTime, { start: nextWeekStart, end: nextWeekEnd });
     if (isTodayEvent) timeList.add("Сегодня");
     if (isTomorrowEvent) timeList.add("Завтра");
     if (isThisWeekEvent) timeList.add("На этой неделе");
@@ -101,16 +136,16 @@ export const formatAirtableData = async () => {
     if (Array.isArray(record.fields.web_site_tag)) {
       record.fields.web_site_tag.forEach(tag => tagList.add(tag.trim())); // Добавляем теги в Set
     }
-
+    console.log(record.fields.event_discriptoin);
     return {
-      title: cleanTitle,
+      title: formateTitle,
       time: formattedTime,
       date: formattedTimeForColumns,
-      WeekDay: formattedWeekDay,
+      weekDay: formattedWeekDay,
       dataDay: formattedDataDay,
       dataMouth: formateddataMouth,
-      DataTime: formatedDataTime,
-
+      dataTime: formatedDataTime,
+      dataStr: formatedDataStr,
       
       placeName: record.fields.place_name 
       ? record.fields.place_name[0]?.trim() || '' 
@@ -121,10 +156,9 @@ export const formatAirtableData = async () => {
       placeLink: record.fields.place_link 
       ? record.fields.place_link[0]?.trim() || '' 
       : '',
-      
-
-      description: record.fields.event_discriptoin?.trim() || '', // Проверка на undefined
-      price: price,
+      shortDescription: formatedShortDescription,
+      description: record.fields['Описание']?.trim() || '', // Проверка на undefined
+      price: formatedPrice,
       imageUrl: record.fields.img_url?.trim() || '', // Проверка на undefined
       isToday: isTodayEvent,
       isTomorrow: isTomorrowEvent,
@@ -133,10 +167,11 @@ export const formatAirtableData = async () => {
       eventTagList: record.fields.web_site_tag ? [...record.fields.web_site_tag, 'Все'] : ['Все'],
       eventExternalLink: record.fields.external_link?.trim() || '',
       eventProfeePagelLink: record.fields.profee_page_link?.trim() || '',
-
+      
     };
   });
 };
 
 export { tagList };
 export { timeList };
+export { globalTimeSpan };

@@ -128,11 +128,12 @@ const CalendarColumns = () => {
               Все
             </span>
           </li>
-  
+          
+          {/* юля сказала убрать покачто 
           <li className="text-xs text-[#454545] mt-4 py-2">ГДЕ?</li>
           <li><span className="p-2 hover:text-white cursor-pointer">HotSpot</span></li>
           <li><span className="p-2 hover:text-white cursor-pointer">В баре</span></li>
-          <li><span className="p-2 hover:text-white cursor-pointer">На улице</span></li>
+          <li><span className="p-2 hover:text-white cursor-pointer">На улице</span></li>*/}
         </ul>
       </div>
         {/* Контейнер для столбцов с датами и днями недели */}
