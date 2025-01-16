@@ -1,5 +1,4 @@
 import React from 'react';
-//import { Routes, Route, Link } from 'react-router-dom';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import ControlPanel from './pages/ControlPanel';
 import Login from './pages/Login'; // Страница логина (если есть)
@@ -13,6 +12,7 @@ import './App.css';
 
 const App = () => {
   return (
+    <Router> {/* Оборачиваем всё приложение в Router */}
     <div className="grid grid-cols-1 min-h-screen">
       <nav className="p-4 flex">
         <div className="w-48 py-2">
@@ -41,6 +41,7 @@ const App = () => {
       </Routes>
       <Footer />
     </div>
+    </Router> // Закрываем Router
   );
 };
 
