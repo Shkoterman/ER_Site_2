@@ -9,7 +9,7 @@ const EventCard = ({ title, time, address, shortDescription, price, imageUrl, we
     // bg-gradient-to-t from-[#333033] from-30% via-[#333033]/5 via-60% to-[#333033]/30 to-100%
     
 return (
-<div className="p-0 max-w-[560px] h-[480px]  hover:bg-[#000000]/40 flex flex-col justify-between border-r border-b border-[#fdfdfd]/10 relative overflow-hidden pb-4">
+<div className="p-0 max-w-[560px] h-[480px]  hover:bg-[#000000]/40 flex flex-col justify-between border-r border-b border-[#fdfdfd]/10 relative overflow-hidden pb-4" >
     
     
     

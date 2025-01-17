@@ -73,45 +73,54 @@ export const formatAirtableData = async () => {
 
   return data.map((record) => {
     // Время
-    const utcDate = parseISO(record.fields.start_date); // парс в ISO
-    const barcelonaTime = toZonedTime(utcDate, 'Europe/Madrid'); // часовой пояс
-    let formattedTime = format(barcelonaTime, "dd MMMM 'в' HH:mm", { locale: ru }); // формат
-    const formattedTimeForColumns = format(barcelonaTime, "EEEE, dd.MM", { locale: ru }); // формат
-    const formattedWeekDay = format(barcelonaTime, "EEEE", { locale: ru }); // формат
-    const formattedDataDay = format(barcelonaTime, "dd", { locale: ru }); // формат
-    const formateddataMouth = format(barcelonaTime, "MM", { locale: ru }); // формат
-    //let formatedFromToDate = String(); // с по
-          
-    //чек на показываение времени
-    let formatedDataTime = format(barcelonaTime, "HH:mm", { locale: ru }); // формат
-    const dontShowTime = record.fields.dont_show_time || false;
-    if (dontShowTime) formatedDataTime = "";
 
-    // это всё для "и ещё 2 дня"    
     const startDate = record.fields.start_date ? new Date(record.fields.start_date) : null;
     const stopDate = record.fields.stop_date ? new Date(record.fields.stop_date) : null;
-    
     let formatedDataStr = record.fields.str_date;
-    if (startDate && stopDate && startDate.getDate() !== stopDate.getDate()) {
-      if (format(startDate, "MMMM") === format(stopDate, "MMMM")) {
-        formattedTime = format(startDate, "dd — ", { locale: ru }) + format(stopDate, "dd MMMM", { locale: ru }); // формат с по
-      } else {
-        formattedTime = format(startDate, "dd MMMM — ", { locale: ru }) + format(stopDate, "dd MMMM", { locale: ru }); // формат с по
-      }
-      const dayDifference = Math.ceil(((stopDate - startDate) / (1000 * 60 * 60 * 24))-1);
-      if (formatedDataStr === undefined) {
-        // Функция для правильного склонения слова "день"
-        const getDayWord = (num) => {
-          if (num % 10 === 1 && num % 100 !== 11) return "день";
-          if ([2, 3, 4].includes(num % 10) && ![12, 13, 14].includes(num % 100)) return "дня";
-          return "дней";
-        };
+    const dontShowTime = record.fields.dont_show_time || false;
 
-        formatedDataStr = `и ещё ${dayDifference} ${getDayWord(dayDifference)}`;
-      } else {
+    const barcelonaStartData = toZonedTime(startDate, 'Europe/Madrid'); // часовой пояс
+    const barcelonaStopData = toZonedTime(stopDate, 'Europe/Madrid'); // часовой пояс
+
+    const formattedTimeForColumns = format(barcelonaStartData, "EEEE, dd.MM", { locale: ru }); // формат
+    const formattedWeekDay = format(barcelonaStartData, "EEEE", { locale: ru }); // формат
+    const formattedDataDay = format(barcelonaStartData, "dd", { locale: ru }); // формат
+    const formateddataMouth = format(barcelonaStartData, "MM", { locale: ru }); // формат
+    let formatedStartTime = format(barcelonaStartData, "HH:mm", { locale: ru });
+    
+
+    let formattedStartData = format(barcelonaStartData, "dd MMMM", { locale: ru });
+    if (!dontShowTime) {
+      formattedStartData = formattedStartData + ', '+ formatedStartTime;
+      if (stopDate) {
+        formattedStartData = formattedStartData + ' — ' + format(barcelonaStopData, " HH:mm", { locale: ru });
       }
-    } else {
-      formatedDataStr = "";
+    }
+    
+    //чек на показываение времени
+    if (dontShowTime) formatedStartTime = "";
+
+    // это всё для "и ещё 2 дня"    
+    // Функция для правильного склонения слова "день"
+    const getDayWord = (num) => {
+      if (num % 10 === 1 && num % 100 !== 11) return "день";
+      if ([2, 3, 4].includes(num % 10) && ![12, 13, 14].includes(num % 100)) return "дня";
+      return "дней";
+    };
+
+    if (formatedDataStr === undefined) {
+      if (startDate && barcelonaStopData && startDate.getDate() !== barcelonaStopData.getDate()) {
+        //для подписки и ещё дней
+        const dayDifference = Math.ceil(((barcelonaStopData - startDate) / (1000 * 60 * 60 * 24))-1);
+        formatedDataStr = `и ещё ${dayDifference} ${getDayWord(dayDifference)}`;
+        
+        //для с по на странице ивента
+        if (format(startDate, "MMMM") === format(barcelonaStopData, "MMMM")) {
+          formattedStartData = format(startDate, "dd — ", { locale: ru }) + format(barcelonaStopData, "dd MMMM", { locale: ru }); // формат с по
+        } else {
+          formattedStartData = format(startDate, "dd MMMM — ", { locale: ru }) + format(barcelonaStopData, "dd MMMM", { locale: ru }); // формат с по
+        }
+      } 
     }
     
     // чистка имоджей
@@ -125,17 +134,17 @@ export const formatAirtableData = async () => {
       ? record.fields.short_description
       : record.fields.event_discriptoin;
     
-    const formatedPrice = record.fields.cost_all === 0 ? "Бесплатно" : record.fields.cost_all + " €";
+    const formatedPrice = record.fields.cost_all === 0 ? "Бесплатно" : record.fields.cost_all === undefined ? "хз 🤷‍♂️" : record.fields.cost_all + " €";
 
     // Булевые поля времени
-    const isTodayEvent = isToday(barcelonaTime);
-    const isTomorrowEvent = isTomorrow(barcelonaTime);
-    const isThisWeekEvent = isThisWeek(barcelonaTime, { weekStartsOn: 1 });
+    const isTodayEvent = isToday(barcelonaStartData);
+    const isTomorrowEvent = isTomorrow(barcelonaStartData);
+    const isThisWeekEvent = isThisWeek(barcelonaStartData, { weekStartsOn: 1 });
     
     // Добавляем временные теги в Set timeList
     const nextWeekStart = startOfWeek(addWeeks(new Date(), 1), { weekStartsOn: 1 });
     const nextWeekEnd = endOfWeek(nextWeekStart, { weekStartsOn: 1 });
-    const atNextWeekEvent = isWithinInterval(barcelonaTime, { start: nextWeekStart, end: nextWeekEnd });
+    const atNextWeekEvent = isWithinInterval(barcelonaStartData, { start: nextWeekStart, end: nextWeekEnd });
     if (isTodayEvent) timeList.add("Сегодня");
     if (isTomorrowEvent) timeList.add("Завтра");
     if (isThisWeekEvent) timeList.add("На этой неделе");
@@ -145,15 +154,15 @@ export const formatAirtableData = async () => {
     if (Array.isArray(record.fields.web_site_tag)) {
       record.fields.web_site_tag.forEach(tag => tagList.add(tag.trim())); // Добавляем теги в Set
     }
-    console.log(record.fields.event_discriptoin);
+    
     return {
       title: formateTitle,
-      time: formattedTime,
+      time: formattedStartData,
       date: formattedTimeForColumns,
       weekDay: formattedWeekDay,
       dataDay: formattedDataDay,
       dataMouth: formateddataMouth,
-      dataTime: formatedDataTime,
+      dataTime: formatedStartTime,
       dataStr: formatedDataStr,
       //FromToDate: formatedFromToDate,
       
@@ -170,7 +179,6 @@ export const formatAirtableData = async () => {
       description: record.fields['Описание']?.trim() || '', // Проверка на undefined
       price: formatedPrice,
       imageUrl: record.fields.image?.[0]?.url?.trim() || '', // Проверка на undefined
-      //imageUrl: record.fields.img_url?.trim() || '', // Проверка на undefined
       isToday: isTodayEvent,
       isTomorrow: isTomorrowEvent,
       isThisWeek: isThisWeekEvent,

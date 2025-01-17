@@ -79,14 +79,18 @@ const EventPage = () => {
       />     
 
       <p className="eventPage-price">{event.price}</p>
-
-      {/* Кнопка для открытия ссылки */}
+      {console.log(event.eventExternalLink, typeof event.eventExternalLink)}
+      {/* Кнопка для открытия ссылки на ивент */}
+      {event.eventExternalLink.length > 0 ? 
+      (
       <button 
         className="eventPage-button" 
         onClick={handleEventButtonClick}
       >
         Перейти на страницу события
       </button>
+      ) : ("")
+      }
 
       {/* Временные теги */}
       <div className="eventPage-tags">

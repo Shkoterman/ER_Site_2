@@ -17,12 +17,11 @@ const Calendar_grid = () => {
   const navigate = useNavigate();
 
   const handleCardClick = (event) => {
-    if (event.eventExternalLink !== "") {
-      navigate('/event', { state: event }); // Переход на страницу события
-    } if (event.eventProfeePagelLink !== "") {
-      window.open(event.eventProfeePagelLink, '_blank'); // Открывает внешнюю ссылку в новой вкладке
+    if (event.eventProfeePagelLink !== "") {
+      window.open(event.eventProfeePagelLink, '_blank'); // Открывает profee ссылку в нов вкладке
+      //navigate('/event', { state: event }); // Переход на страницу события
     } else {
-      return true;
+      navigate('/event', { state: event }); // Переход на страницу события
     }
   };
   
@@ -226,7 +225,7 @@ const Calendar_grid = () => {
       {/* Контейнер для карточек */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border-l border-t border-[#fdfdfd]/10 lg:mx-6 rounded-tl-2xl mt-4 lg:mt-0">
         {filteredEvents.map((event, index) => (
-          <div key={index} onClick={() => handleCardClick(event)}>
+          <div key={index} className="cursor-pointer" onClick={() => handleCardClick(event)}>
             <EventCard {...event} />
           </div>
         ))}
