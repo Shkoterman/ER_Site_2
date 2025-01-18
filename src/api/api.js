@@ -80,7 +80,7 @@ export const formatAirtableData = async () => {
     const dontShowTime = record.fields.dont_show_time || false;
 
     const barcelonaStartData = toZonedTime(startDate, 'Europe/Madrid'); // часовой пояс
-    const barcelonaStopData = toZonedTime(stopDate, 'Europe/Madrid'); // часовой пояс
+    const barcelonaStopData = stopDate ? toZonedTime(stopDate, 'Europe/Madrid') : null; // часовой пояс
 
     const formattedTimeForColumns = format(barcelonaStartData, "EEEE, dd.MM", { locale: ru }); // формат
     const formattedWeekDay = format(barcelonaStartData, "EEEE", { locale: ru }); // формат
