@@ -439,3 +439,181 @@ button, .App-link {
   background-color: #e60000;
   transform: scale(0.98);
 }
+
+
+/* --- ДЛЯ loginpage --- */
+
+
+/* Обертка для всего контейнера */
+.loginPage-container {
+  
+  display: flex; /* Используем Flexbox для центрирования */
+  justify-content: center; /* Центрируем по горизонтали */
+  align-items: center; /* Центрируем по вертикали */
+  height: 100vh; /* Занимает всю высоту экрана */
+  background-color: #131313; /* Фон контейнера */
+  color: #131313;
+}
+
+/* Обертка для поля ввода и кнопки */
+.loginPage-placeholder {
+  height: 190px;
+  display: flex;
+  flex-direction: column; /* Располагаем элементы друг под другом */
+  align-items: center; /* Центрируем элементы по горизонтали */
+  background-color: #131313; /* Фон формы */
+  padding: 20px; /* Отступы внутри формы */
+  border-radius: 8px; /* Скругленные углы */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Тень для формы */
+}
+
+/* Стили для поля ввода */
+.loginPage-placeholder input {
+  padding: 10px;
+  margin-bottom: 20px; /* Отступ между полем и кнопкой */
+  width: 250px; /* Ширина поля ввода */
+  background-color: #131313; /* Фон поля ввода */
+  color: #fff; /* Цвет текста */
+  border: 4px solid #e9e9e9; /* Цвет рамки */
+  border-radius: 2px; /* Скругленные углы */
+  font-size: 16px; /* Размер шрифта */
+  font-family: 'Montserrat', sans-serif; /* Шрифт внутри поля */
+}
+
+/* Стили для кнопки */
+.loginPage-button {
+  padding: 10px;
+  width: 250px; /* Ширина кнопки, такая же как у поля ввода */
+  background-color: #131313; /* Фон кнопки */
+  color: #e9e9e9; /* Цвет текста */
+  border: 4px solid #e9e9e9; /* Цвет рамки */
+  border-radius: 2px; /* Скругленные углы */
+  font-size: 16px; /* Размер шрифта */
+  font-family: 'Montserrat', sans-serif; /* Шрифт внутри кнопки */
+  cursor: pointer; /* Курсор в виде руки */
+  transition: background-color 0.3s ease, border-color 0.3s ease; /* Плавное изменение фона и цвета обводки */
+}
+
+/* Стили для кнопки при наведении */
+.loginPage-button:hover {
+  background-color: #e9e9e9; /* Цвет фона кнопки при наведении */
+  color: #131313; /* Цвет текста при наведении */
+  border-color: #131313; /* Цвет обводки при наведении */
+}
+
+/* Стили для текста ошибки */
+.loginPage-error,
+.loginPage-placeholder{
+  color: #e9e9e9;
+  margin-top: 10px;
+  font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+
+/* --- ДЛЯ controlpanel --- */
+
+
+.controlPanel-container {
+  padding: 20px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.controlPanel-input {
+  padding: 10px;
+  margin-right: 10px;
+  font-size: 16px;
+  border: 2px solid #e9e9e9;
+  border-radius: 4px;
+  background-color: #131313;
+  color: #e9e9e9;
+}
+
+.controlPanel-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #131313;
+  color: #e9e9e9;
+  border: 2px solid #e9e9e9;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.response-message {
+  margin-top: 10px;
+  color: #47a447;
+}
+
+/* Контейнер для таблицы */
+.count-of-string-container {
+  margin: 20px;
+  padding: 10px;
+  background-color: #3f3f3f;
+  border-radius: 8px;
+}
+
+/* Заголовок */
+h2 {
+  text-align: center;
+  color: #c9c9c9;
+}
+
+/* Таблица */
+.count-of-string-table {
+  background-color: #3f3f3f;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+/* Заголовки таблицы */
+.count-of-string-table th {
+  background-color: #3f3f3f;
+  color: #c9c9c9;
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #181818;
+}
+
+/* Ячейки таблицы */
+.count-of-string-table td {
+  color: #c9c9c9;
+  padding: 10px;
+  border: 1px solid #181818;
+}
+
+/* Стили для кнопок */
+.delete-btn, .controlpanel-details-btn {
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  color: red;
+  margin-right: 10px;
+}
+
+.controlpanel-details-btn {
+  color: #ccc;
+}
+
+.delete-btn:hover {
+  color: darkred;
+}
+
+.controlpanel-details-btn:hover {
+  color: gray;
+}
+
+/* Стиль для разделения ячеек */
+.count-of-string-table td {
+  border-left: 1px solid #ddd;
+}
+
+.count-of-string-table th:first-child,
+.count-of-string-table td:first-child {
+  border-left: none;
+}
+

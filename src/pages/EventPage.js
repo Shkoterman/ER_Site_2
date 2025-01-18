@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { useLocation, useNavigate  } from 'react-router-dom';
 import { marked } from 'marked';
 import '../App.css'; // Импортируем стили
@@ -8,9 +9,24 @@ const EventPage = () => {
   const location = useLocation();
   const event = location.state; // Получаем объект события через state
 
+  //подсчёт клика
+  const countClick = async (inputText) => {
+    try {
+      await axios.post('http://localhost:5000/clickcount', {
+        text: inputText,
+      });
+      //setResponseMessage(response.data.message);
+      //setInputText(''); // Очистка строки после успешной записи
+    } catch (error) {
+      console.error('Ошибка при добавлении записи:', error);
+      //setResponseMessage('Ошибка при добавлении записи');
+    }
+  };
+
   const handleEventButtonClick = () => {
     if (event.eventExternalLink) {
       window.open(event.eventExternalLink, '_blank'); // Открывает ссылку в новой вкладке
+      countClick('ext link: '+event.title);
     } else {
       alert('Ссылка не найдена'); // Сообщение, если ссылка отсутствует
     }
