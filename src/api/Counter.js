@@ -32,7 +32,7 @@ const clickcount = async (req, res) => {
 
     res.status(201).json({ message: 'Запись успешно добавлена', data: newEntry });
   } catch (error) {
-    console.error('Ошибка при добавлении записи:', error); // Логирование ошибки
+    console.error('Ошибка при добавлении записи тут:', error); // Логирование ошибки
     res.status(500).json({ message: 'Ошибка сервера' });
   }
 };

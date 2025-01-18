@@ -40,6 +40,61 @@ app.get('/clickcount/count', async (req, res) => {
   }
 });
 
+app.get('/clickcount/strings', async (req, res) => {
+  try {
+    // Получаем все записи из коллекции ClickCountTable
+    const records = await ClickCountTable.find(); 
+
+    const stringCounts = {};
+
+    // Обрабатываем каждую запись
+    records.forEach((record) => {
+      const text = record.text; // Убедитесь, что поле называется "text"
+      if (text) {
+        stringCounts[text] = (stringCounts[text] || 0) + 1;
+      }
+    });
+
+    res.json(stringCounts);
+  } catch (error) {
+    console.error('Ошибка при получении строк:', error);
+    res.status(500).json({ error: 'Ошибка при получении строк' });
+  }
+});
+
+//удаление всех одинаковых записей
+app.delete('/clickcount/strings/:text', async (req, res) => {
+  const { text } = req.params; // Получаем текст из параметра URL
+  try {
+    // Удаляем все записи с данным текстом
+    await ClickCountTable.deleteMany({ text });
+
+    res.status(200).json({ message: 'Записи удалены' });
+  } catch (error) {
+    console.error('Ошибка при удалении записей:', error);
+    res.status(500).json({ error: 'Ошибка при удалении записей' });
+  }
+});
+
+// маршрут для деталей
+app.get('/clickcount/details/:key', async (req, res) => {
+  try {
+    const key = decodeURIComponent(req.params.key);
+    
+    // Ищем записи, где поле "text" совпадает с переданным ключом
+    const results = await ClickCountTable.find({ text: key });
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Данные не найдены' });
+    }
+
+    res.json(results);
+  } catch (error) {
+    console.error('Ошибка при получении данных:', error);
+    res.status(500).json({ message: 'Ошибка сервера' });
+  }
+});
+
 // Маршрут для логина (проверка пароля и генерация токена)
 app.post('/login', (req, res) => {
   const { password } = req.body;
@@ -71,6 +126,8 @@ app.get('/controlpanel', (req, res) => {
     res.status(403).json({ message: 'Неавторизованный доступ' }); // Ошибка проверки токена
   }
 });
+
+
 
 // Запуск сервера
 app.listen(5000, () => {

@@ -543,3 +543,77 @@ button, .App-link {
   margin-top: 10px;
   color: #47a447;
 }
+
+/* Контейнер для таблицы */
+.count-of-string-container {
+  margin: 20px;
+  padding: 10px;
+  background-color: #3f3f3f;
+  border-radius: 8px;
+}
+
+/* Заголовок */
+h2 {
+  text-align: center;
+  color: #c9c9c9;
+}
+
+/* Таблица */
+.count-of-string-table {
+  background-color: #3f3f3f;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+/* Заголовки таблицы */
+.count-of-string-table th {
+  background-color: #3f3f3f;
+  color: #c9c9c9;
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #181818;
+}
+
+/* Ячейки таблицы */
+.count-of-string-table td {
+  color: #c9c9c9;
+  padding: 10px;
+  border: 1px solid #181818;
+}
+
+/* Стили для кнопок */
+.delete-btn, .controlpanel-details-btn {
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  color: red;
+  margin-right: 10px;
+}
+
+.controlpanel-details-btn {
+  color: #ccc;
+}
+
+.delete-btn:hover {
+  color: darkred;
+}
+
+.controlpanel-details-btn:hover {
+  color: gray;
+}
+
+/* Стиль для разделения ячеек */
+.count-of-string-table td {
+  border-left: 1px solid #ddd;
+}
+
+.count-of-string-table th:first-child,
+.count-of-string-table td:first-child {
+  border-left: none;
+}
+

@@ -3,6 +3,7 @@ import { formatAirtableData, tagList, timeList } from '../api/api';
 import EventCard from '../components/EventCardV2';
 import { useNavigate } from 'react-router-dom';
 import '../App.css'; // Импортируем файл стилей
+import axios from 'axios';
 
 
 
@@ -137,6 +138,17 @@ const Calendar_grid = () => {
     setFilteredEvents(filtered);
   };
 
+  //подсчёт клика
+  const countClick = async (inputText) => {
+    try {
+      await axios.post('http://localhost:5000/clickcount', {
+        text: inputText,
+      });
+    } catch (error) {
+      console.error('Ошибка при добавлении записи:', error);
+    }
+  };
+
   return (
     <div className="lg:flex gap-4 pr-2 pb-24 bg-[#333033]">
       <div className="flex-1">
@@ -148,7 +160,15 @@ const Calendar_grid = () => {
             <li key={index}>
               <span
                 className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
-                onClick={() => handleFilterTimeClick(timeTag)}
+                onClick={() => {
+                  handleFilterTimeClick(timeTag);
+                  if (filtersTimeSet['Всегда']) {
+                    countClick('filter on: ' + timeTag);
+                  } else {
+                    countClick('filter off: ' + timeTag);
+                  }
+                }}
+                
               >
                 {timeTag}
               </span>
@@ -157,7 +177,15 @@ const Calendar_grid = () => {
           <li>
             <span
               className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet['Всегда'] ? 'font-bold' : ''}`}
-              onClick={() => handleFilterTimeClick('Всегда')}
+              onClick={() => {
+                handleFilterTimeClick('Всегда');
+                if (filtersTimeSet['Всегда']) {
+                  countClick('filter on: Всегда');
+                } else {
+                  countClick('filter off: Всегда');
+                }
+              }}
+              
             >
               Всегда
             </span>
@@ -169,7 +197,14 @@ const Calendar_grid = () => {
             <li key={index}>
               <span
                 className={`p-2 hover:text-white cursor-pointer ${filtersTagSet[tag] ? 'font-bold' : ''}`}
-                onClick={() => handleFilterTagClick(tag)}
+                onClick={() => {
+                  handleFilterTagClick(tag);
+                  if (filtersTimeSet['Всегда']) {
+                    countClick('filter on: ' + tag);
+                  } else {
+                    countClick('filter off: ' + tag);
+                  }
+                }}
               >
                 {tag}
               </span>
@@ -178,7 +213,14 @@ const Calendar_grid = () => {
           <li>
             <span
               className={`p-2 hover:text-white cursor-pointer ${filtersTagSet['Все'] ? 'font-bold' : ''}`}
-              onClick={() => handleFilterTagClick('Все')}
+              onClick={() => {
+                handleFilterTagClick('Все');
+                if (filtersTimeSet['Всегда']) {
+                  countClick('filter on: Все');
+                } else {
+                  countClick('filter off: Все');
+                }
+              }}
             >
               Все
             </span>
@@ -200,7 +242,11 @@ const Calendar_grid = () => {
       {/* Контейнер для карточек */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-0 border-l border-t border-[#fdfdfd]/10">
         {filteredEvents.map((event, index) => (
-          <div key={index} onClick={() => handleCardClick(event)}>
+          <div key={index} 
+            onClick={() => {
+              handleCardClick(event);
+              countClick('event card click: ' + event.title);
+            }}>
             <EventCard {...event} />
           </div>
         ))}
