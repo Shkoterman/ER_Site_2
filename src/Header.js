@@ -1,20 +1,31 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate  } from 'react-router-dom';
 import logoImage from './img/logo_ensalada.png';
 
-const Header = ({ countClick }) => {
+const Header = ({ countClick = () => {} }) => {  // Добавляем значение по умолчанию для countClick
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogoClick = () => {
+    countClick('nav: Календарь'); // Отправляем клик-событие
+    navigate('/CalendarGrid'); // Переход на страницу "Календарь"
   };
 
   return (
     <nav className="px-4 py-2 lg:py-2 flex items-center justify-between shadow-md relative">
       {/* Логотип */}
       <div className="flex">
-        <div class="flex-none w-40 lg:w-48 lg:mt-2 py-2"><img src={logoImage} alt="Logo" /></div>
-        <div class="hidden lg:block lg:w-48 py-4 mt-1 text-[12px] leading-[13px] font-[300] px-1 opacity-50 hidden"></div>
+        <div 
+          className="flex-none w-40 lg:w-48 lg:mt-2 py-2 cursor-pointer" 
+          onClick={handleLogoClick}
+        >
+          <img src={logoImage} alt="Logo" />
+        </div>
+        <div className="hidden lg:block lg:w-48 py-4 mt-1 text-[12px] leading-[13px] font-[300] px-1 opacity-50"></div>
       </div>
 
       {/* Гамбургер-меню */}
@@ -41,7 +52,7 @@ const Header = ({ countClick }) => {
 
       {/* Меню */}
       <ul
-        className={` bg-[#111111] ${
+        className={`bg-[#111111] ${
           isOpen ? 'flex' : 'hidden'
         } flex-col absolute top-16 left-0 w-full shadow-lg p-4 gap-3 md:gap-3 md:flex md:flex-row md:static md:top-0 md:w-auto`}
       >
@@ -60,16 +71,7 @@ const Header = ({ countClick }) => {
             onClick={() => countClick('nav: Календарь grid')}
             className="block mt-1.5 py-2 px-4 text-white/60 hover:text-white"
           >
-            Календарь grid
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/CalendarColumns"
-            onClick={() => countClick('nav: Календарь columns')}
-            className="block mt-1.5 py-2 px-4 text-white/60 hover:text-white"
-          >
-            Календарь columns
+            Календарь
           </Link>
         </li>
       </ul>

@@ -6,7 +6,7 @@ import ControlPanel from './pages/ControlPanel';
 import Login from './pages/Login';
 import About from './pages/About';
 import CalendarGrid from './pages/CalendarGrid';
-import CalendarColumns from './pages/CalendarColumns';
+//import CalendarColumns from './pages/CalendarColumns';
 import EventPage from './pages/EventPage';
 import Footer from './Footer';
 import './App.css';
@@ -35,7 +35,7 @@ const App = () => {
             <Route path="/" element={<CalendarGrid />} /> {/* Главная страница */}
             <Route path="/about" element={<About />} />
             <Route path="/CalendarGrid" element={<CalendarGrid />} />
-            <Route path="/CalendarColumns" element={<CalendarColumns />} />
+            {/*<Route path="/CalendarColumns" element={<CalendarColumns />} />*/}
             <Route path="/event" element={<EventPage />} /> {/* Страница события */}
             <Route path="/controlpanel" element={<ControlPanel />} />
             <Route path="/login" element={<Login />} />

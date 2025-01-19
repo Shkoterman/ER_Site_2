@@ -1,5 +1,16 @@
 import React from 'react';
 import logoImage from './img/logo_ensalada.png';
+import axios from 'axios';
+
+const countClick = async (inputText) => {
+  try {
+    await axios.post('http://localhost:5000/clickcount', {
+      text: inputText,
+    });
+  } catch (error) {
+    console.error('Ошибка при добавлении записи:', error);
+  }
+};
 
 const Footer = () => {
   return (
@@ -14,13 +25,25 @@ const Footer = () => {
       <div class="flex-none lg:w-1/2 pl-6 flex gap-8 font-[400]">
       <ul class="flex-none lg:w-48 py-4 flex flex-col gap-3">
         <li class="font-[500] text-[#676767] lg:text-xl">Быть с нами:</li>
-        <li><a href="https://www.instagram.com/ensalada.bcn/" target="_blank">Instagram</a></li>
-        <li><a href="https://www.t.me/ensalada/" target="_blank">Telegram</a></li>
-        <li><a href="https://www.t.me/ensalada/" target="_blank">Чат</a></li>
+        <li>
+          <a 
+            href="https://www.instagram.com/ensalada.bcn/" target="_blank"
+            onClick={() => countClick('Footer click Instagaram')}
+            >Instagram
+          </a>
+        </li>
+        <li><a 
+          href="https://www.t.me/ensalada/" target="_blank"
+          onClick={() => countClick('Footer click Telegram')}
+          >Telegram</a></li>
+        {/*<li><a href="https://www.t.me/ensalada/" target="_blank">Чат</a></li>*/}
       </ul>
       <ul class="flex-none lg:w-48 py-4 flex flex-col gap-3">
         <li class="font-[500] text-[#676767] lg:text-xl">Есть вопросы?</li>
-        <li><a href="https://www.t.me/ensalada/" target="_blank">Написать в Telegram</a></li>
+        <li><a 
+          href="https://t.me/ensalada_org" target="_blank"
+          onClick={() => countClick('Footer click ensalada_org')}
+          >Написать в Telegram</a></li>
         <li class="w-48 text-[#676767] text-[13px] leading-[16px] font-[200]">По сотрудничеству, рекламе или если нужна помощь нашей службы поддержки.</li>
       </ul>
       </div>

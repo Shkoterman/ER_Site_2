@@ -8,16 +8,38 @@ const AIRTABLE_API_KEY = process.env.REACT_APP_AIRTABLE_API_KEY;
 const BASE_ID = process.env.REACT_APP_BASE_ID;
 const TABLE_NAME = process.env.REACT_APP_TABLE_NAME;
 const VIEW_NAME = "for_web_calendar";
+const CACHE_KEY = "airtableData";
+
 
 // Локальный JSON для данных из Airtable
-let cachedData = null;
+let cachedData = getCachedData();
 let tagList = new Set(); // набор тэгов 
 let timeList = new Set(); // набор времён (сегодня завтра вот это всё) 
 let globalTimeSpan = String();
 timeList.add("Всегда");
 tagList.add("Все")
 
-export const fetchAirtableData = async () => {  // получаю данные из Airtable
+function getCachedData() {
+  const cached = localStorage.getItem(CACHE_KEY);
+  return cached ? JSON.parse(cached) : null;
+}
+
+function saveCachedData(data) {
+  localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+}
+
+export const clearCachedData = () => {
+  localStorage.removeItem(CACHE_KEY);
+  cachedData = null;
+  console.log("Кэш очищен.");
+};
+
+export const fetchAirtableData = async () => {
+  if (cachedData) {
+    console.log("Используется кэш.");
+    return cachedData;
+  }
+
   try {
     const response = await axios.get(
       `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}?view=${VIEW_NAME}`,
@@ -28,34 +50,22 @@ export const fetchAirtableData = async () => {  // получаю данные �
       }
     );
 
-    // Обновляем локальный кэш
     cachedData = response.data.records;
-
+    saveCachedData(cachedData);  // Сохраняем кэш
     return cachedData;
   } catch (error) {
-    // Выводим ошибку в консоль
     console.error('Ошибка при запросе данных из Airtable:', error.message);
-
-    // Дополнительно выводим информацию о коде ошибки, если доступно
-    if (error.response) {
-      console.error('Код ошибки:', error.response.status);
-      console.error('Ответ сервера:', error.response.data);
-    } else if (error.request) {
-      console.error('Запрос был отправлен, но ответа не получено:', error.request);
-    } else {
-      console.error('Ошибка при настройке запроса:', error.message);
-    }
-
     return cachedData; // Возвращаем кэшированные данные, если они есть
   }
 };
 
 export const checkCachedData = async () => {  // чек, есть ли кэшированая версия
   if (!cachedData || cachedData.length === 0) {
-    //console.log('Данные отсутствуют в кэше, загружаем из Airtable...');
+    console.log('Данные отсутствуют в кэше, загружаем из Airtable...');
     await fetchAirtableData();
   } else {
-    //console.log('Данные найдены в кэше.');
+    console.log('Данные найдены в кэше.');
+    return cachedData;    
   }
 };
 

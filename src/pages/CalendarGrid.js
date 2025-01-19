@@ -26,6 +26,8 @@ const Calendar_grid = () => {
     }
   };
   
+  
+
   useEffect(() => { // Вызов handleUpdateData при загрузке компонента
     const fetchData = async () => {
       const formattedEvents = await formatAirtableData();
@@ -149,133 +151,53 @@ const Calendar_grid = () => {
 
   return (
     <div className="lg:flex flex-col gap-8 p-4 pb-24 bg-[#222221] text-[#70706c]">
-      <div className="flex-1 hidden">
-        <ul className="flex flex-col mt-40 sticky top-4 bg-[#222221] rounded-r-xl px-3 py-6 gap-1 text-[#999999] w-[180px] text-[14px]">
-          
-          {/* кнопки для временных тэгов из timeList */}
-          <li className="text-xs text-[#454545] py-2">КОГДА?</li>
-          {Array.from(timeList).map((timeTag, index) => (
-            <li key={index}>
-              <span
-                className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
-                onClick={() => {
-                  console.log('asdasd')
-                  handleFilterTimeClick(timeTag);
-                  if (filtersTimeSet['Всегда']) {
-                    countClick('filter on: ' + timeTag);
-                  } else {
-                    countClick('filter off: ' + timeTag);
-                  }
-                }}
-                
-              >
-                {timeTag}
-              </span>
-            </li>
-          ))}
-          <li>
-            <span
-              className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet['Всегда'] ? 'font-bold' : ''}`}
-              onClick={() => {
-                handleFilterTimeClick('Всегда');
-                if (filtersTimeSet['Всегда']) {
-                  countClick('filter on: Всегда');
-                } else {
-                  countClick('filter off: Всегда');
-                }
-              }}
-              
-            >
-              Всегда
-            </span>
-          </li>
-          
-          {/* Отображаем кнопки для каждого тега из tagList */}
-          <li className="text-xs text-[#454545] mt-4 py-2">КАК?</li>
-          {Array.from(tagList).map((tag, index) => (
-            <li key={index}>
-              <span
-                className={`p-2 hover:text-white cursor-pointer ${filtersTagSet[tag] ? 'font-bold' : ''}`}
-                onClick={() => {
-                  handleFilterTagClick(tag);
-                  if (filtersTimeSet['Всегда']) {
-                    countClick('filter on: ' + tag);
-                  } else {
-                    countClick('filter off: ' + tag);
-                  }
-                }}
-              >
-                {tag}
-              </span>
-            </li>
-          ))}
-          <li>
-            <span
-              className={`p-2 hover:text-white cursor-pointer ${filtersTagSet['Все'] ? 'font-bold' : ''}`}
-              onClick={() => {
-                handleFilterTagClick('Все');
-                if (filtersTimeSet['Всегда']) {
-                  countClick('filter on: Все');
-                } else {
-                  countClick('filter off: Все');
-                }
-              }}
-            >
-              Все
-            </span>
-          </li>
-          {/* юля сказала убрать покачто 
-          <li className="text-xs text-[#454545] mt-4 py-2">ГДЕ?</li>
-          <li><span className="p-2 hover:text-white cursor-pointer">HotSpot</span></li>
-          <li><span className="p-2 hover:text-white cursor-pointer">В баре</span></li>
-          <li><span className="p-2 hover:text-white cursor-pointer">На улице</span></li>*/}
-        </ul>
-      </div>
+
       
-      <div class="py-12">
-        <div class="pb-2 lg:pl-6">
-            <h1 class="text-5xl font-[600] text-[#FDFCF6]">События Барселоны</h1>
-            <div class="pt-2 lg:pt-0 py-1 text-2xl font-[300] text-[#676767]">{globalTimeSpan}</div>
+      <div className="py-12">
+        <div className="pb-2 lg:pl-6">
+            <h1 className="text-5xl font-[600] text-[#FDFCF6]">События Барселоны</h1>
+            <div className="pt-2 lg:pt-0 py-1 text-2xl font-[300] text-[#676767]">{globalTimeSpan}</div>
         </div>
 
-        <div class="lg:px-6 pt-4 pb-4 sticky z-20 bg-[#222221] top-0 overflow-x-scroll">
-            <ul class="flex gap-3 text-center text-sm text-[#9c9c9c] whitespace-nowrap">
-                
-            
-            {/*временое */}
-            {Array.from(timeList).map((timeTag, index) => (
-              <li key={index} 
-              //className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
-              className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer  text-[#666666] font-[500] ${filtersTimeSet[timeTag] ? 'min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-white hover:text-black cursor-pointer  text-[#333333] font-[500]' : ''}`}
-              onClick={() => {
-                handleFilterTimeClick(timeTag);
-                if (filtersTimeSet['Всегда']) {
-                  countClick('filter on: ' + timeTag);
-                } else {
-                  countClick('filter off: ' + timeTag);
-                }
-              }}
-              >{timeTag}</li>
-            ))}
+        <div className="lg:px-6 pt-4 pb-4 sticky z-20 bg-[#222221] top-0 overflow-x-scroll lg:overflow-hidden">
+  <ul className="flex gap-3 text-center text-sm text-[#9c9c9c] whitespace-nowrap">
+    
+    {/* Временные фильтры */}
+    {Array.from(timeList).map((timeTag, index) => (
+      <li key={index}>
+        <button
+          className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer text-[#666666] font-[500] ${
+            filtersTimeSet[timeTag] ? 'bg-white text-[#333333] hover:text-black' : ''
+          }`}
+          onClick={() => {
+            handleFilterTimeClick(timeTag);
+            countClick(filtersTimeSet[timeTag] ? `filter off: ${timeTag}` : `filter on: ${timeTag}`);
+          }}
+        >
+          {timeTag}
+        </button>
+      </li>
+    ))}
 
-            {/*сущностное */}
-            {Array.from(tagList).map((tag, index) => (
-              <li key={index} 
-              //className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
-              className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer  text-[#666666] font-[500] ${filtersTagSet[tag] ? 'min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-white hover:text-black cursor-pointer  text-[#333333] font-[500]' : ''}`}
-              onClick={() => {
-                handleFilterTagClick(tag);
-                if (filtersTimeSet['Всегда']) {
-                  countClick('filter on: ' + tag);
-                } else {
-                  countClick('filter off: ' + tag);
-                }
-              }}
-              >{tag}</li>
-            ))}
-            
-            </ul>
-        </div>
+    {/* Сущностные фильтры */}
+    {Array.from(tagList).map((tag, index) => (
+      <li key={index}>
+        <button
+          className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer text-[#666666] font-[500] ${
+            filtersTagSet[tag] ? 'bg-white text-[#333333] hover:text-black' : ''
+          }`}
+          onClick={() => {
+            handleFilterTagClick(tag);
+            countClick(filtersTagSet[tag] ? `filter off: ${tag}` : `filter on: ${tag}`);
+          }}
+        >
+          {tag}
+        </button>
+      </li>
+    ))}
+    
+  </ul>
+</div>
 
       {/* Контейнер для карточек */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border-l border-t border-[#fdfdfd]/10 lg:mx-6 rounded-tl-2xl mt-4 lg:mt-0">
