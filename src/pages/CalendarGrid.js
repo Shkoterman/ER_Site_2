@@ -159,6 +159,7 @@ const Calendar_grid = () => {
               <span
                 className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
                 onClick={() => {
+                  console.log('asdasd')
                   handleFilterTimeClick(timeTag);
                   if (filtersTimeSet['Всегда']) {
                     countClick('filter on: ' + timeTag);
@@ -223,7 +224,7 @@ const Calendar_grid = () => {
               Все
             </span>
           </li>
-          {/* юля сказала убрать покачто /*}
+          {/* юля сказала убрать покачто 
           <li className="text-xs text-[#454545] mt-4 py-2">ГДЕ?</li>
           <li><span className="p-2 hover:text-white cursor-pointer">HotSpot</span></li>
           <li><span className="p-2 hover:text-white cursor-pointer">В баре</span></li>
@@ -237,18 +238,23 @@ const Calendar_grid = () => {
             <div class="pt-2 lg:pt-0 py-1 text-2xl font-[300] text-[#676767]">{globalTimeSpan}</div>
         </div>
 
-        <div class="lg:px-6 pt-6 pb-6 sticky z-20 bg-[#222221] top-0 overflow-x-scroll lg:overflow-hidden">
+        <div class="lg:px-6 pt-4 pb-4 sticky z-20 bg-[#222221] top-0 overflow-x-scroll">
             <ul class="flex gap-3 text-center text-sm text-[#9c9c9c] whitespace-nowrap">
                 
-            
-            
             
             {/*временое */}
             {Array.from(timeList).map((timeTag, index) => (
               <li key={index} 
               //className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
-              className={`px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer  text-[#666666] font-[500] ${filtersTimeSet[timeTag] ? ' px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-white hover:text-black cursor-pointer  text-[#333333] font-[500]' : ''}`}
-              onClick={() => handleFilterTimeClick(timeTag)}
+              className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer  text-[#666666] font-[500] ${filtersTimeSet[timeTag] ? 'min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-white hover:text-black cursor-pointer  text-[#333333] font-[500]' : ''}`}
+              onClick={() => {
+                handleFilterTimeClick(timeTag);
+                if (filtersTimeSet['Всегда']) {
+                  countClick('filter on: ' + timeTag);
+                } else {
+                  countClick('filter off: ' + timeTag);
+                }
+              }}
               >{timeTag}</li>
             ))}
 
@@ -256,8 +262,15 @@ const Calendar_grid = () => {
             {Array.from(tagList).map((tag, index) => (
               <li key={index} 
               //className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
-              className={`px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer  text-[#666666] font-[500] ${filtersTagSet[tag] ? ' px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-white hover:text-black cursor-pointer  text-[#333333] font-[500]' : ''}`}
-              onClick={() => handleFilterTagClick(tag)}
+              className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer  text-[#666666] font-[500] ${filtersTagSet[tag] ? 'min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-white hover:text-black cursor-pointer  text-[#333333] font-[500]' : ''}`}
+              onClick={() => {
+                handleFilterTagClick(tag);
+                if (filtersTimeSet['Всегда']) {
+                  countClick('filter on: ' + tag);
+                } else {
+                  countClick('filter off: ' + tag);
+                }
+              }}
               >{tag}</li>
             ))}
             
