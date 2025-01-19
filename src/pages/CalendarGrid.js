@@ -159,6 +159,7 @@ const Calendar_grid = () => {
               <span
                 className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
                 onClick={() => {
+                  console.log('asdasd')
                   handleFilterTimeClick(timeTag);
                   if (filtersTimeSet['Всегда']) {
                     countClick('filter on: ' + timeTag);
@@ -241,14 +242,19 @@ const Calendar_grid = () => {
             <ul class="flex gap-3 text-center text-sm text-[#9c9c9c] whitespace-nowrap">
                 
             
-            
-            
             {/*временое */}
             {Array.from(timeList).map((timeTag, index) => (
               <li key={index} 
               //className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
               className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer  text-[#666666] font-[500] ${filtersTimeSet[timeTag] ? 'min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-white hover:text-black cursor-pointer  text-[#333333] font-[500]' : ''}`}
-              onClick={() => handleFilterTimeClick(timeTag)}
+              onClick={() => {
+                handleFilterTimeClick(timeTag);
+                if (filtersTimeSet['Всегда']) {
+                  countClick('filter on: ' + timeTag);
+                } else {
+                  countClick('filter off: ' + timeTag);
+                }
+              }}
               >{timeTag}</li>
             ))}
 
@@ -257,7 +263,14 @@ const Calendar_grid = () => {
               <li key={index} 
               //className={`p-2 hover:text-white cursor-pointer ${filtersTimeSet[timeTag] ? 'font-bold' : ''}`}
               className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer  text-[#666666] font-[500] ${filtersTagSet[tag] ? 'min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-white hover:text-black cursor-pointer  text-[#333333] font-[500]' : ''}`}
-              onClick={() => handleFilterTagClick(tag)}
+              onClick={() => {
+                handleFilterTagClick(tag);
+                if (filtersTimeSet['Всегда']) {
+                  countClick('filter on: ' + tag);
+                } else {
+                  countClick('filter off: ' + tag);
+                }
+              }}
               >{tag}</li>
             ))}
             
