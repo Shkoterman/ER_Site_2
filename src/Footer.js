@@ -1,11 +1,36 @@
 import React from 'react';
+import logoImage from './img/logo_ensalada.png';
 
 const Footer = () => {
   return (
-    <footer className="min-h-40 bg-black p-16">
-      <p>Ensalada 2025. All rights reserved.</p>
+    <footer className="bg-[#111111] p-4 lg:px-16 lg:py-24 min-h-[360px] font-[Commissioner] font-[200]">
+      <div class="lg:max-w-5xl mx-auto lg:flex gap-32">
+      <div class="flex-1 text-[#676767]">
+      <div class="w-48 pb-4 opacity-40"><img src={logoImage} alt="Logo" /></div>
+      <p class="w-48 text-[13px] leading-[16px] pl-6">Коммьюнити и медиа<br/> для тех, кто переехал<br/> в Барселону</p>
+      <p class="w-48 text-[13px] leading-[16px] pl-6 my-4 lg:mt-16 ">ensalada.net 2025</p>
+      </div>
+      
+      <div class="flex-none lg:w-1/2 pl-6 flex gap-8 font-[400]">
+      <ul class="flex-none lg:w-48 py-4 flex flex-col gap-3">
+        <li class="font-[500] text-[#676767] lg:text-xl">Быть с нами:</li>
+        <li><a href="https://www.instagram.com/ensalada.bcn/" target="_blank">Instagram</a></li>
+        <li><a href="https://www.t.me/ensalada/" target="_blank">Telegram</a></li>
+        <li><a href="https://www.t.me/ensalada/" target="_blank">Чат</a></li>
+      </ul>
+      <ul class="flex-none lg:w-48 py-4 flex flex-col gap-3">
+        <li class="font-[500] text-[#676767] lg:text-xl">Есть вопросы?</li>
+        <li><a href="https://www.t.me/ensalada/" target="_blank">Написать в Telegram</a></li>
+        <li class="w-48 text-[#676767] text-[13px] leading-[16px] font-[200]">По сотрудничеству, рекламе или если нужна помощь нашей службы поддержки.</li>
+      </ul>
+      </div>
+      </div>
+      <div class="py-2">
+        
+      </div>
     </footer>
+ 
   );
 };
 
-export default Footer;
+export default Footer; 

@@ -33,7 +33,7 @@ return (
           </div>
      
     
-        <div className="flex justify-between px-4">
+        <div className="flex justify-between px-4 font-[Commissioner]">
             <div className="flex-1">
                 {time && <div className="text-lg leading-[22px] font-[300] px-1 text-white/80">{dataTime}</div>}
                 
@@ -41,7 +41,7 @@ return (
     
             </div>
             <div className="flex-none text-right">
-                {price && <div className="bg-[#E1B71C] text-[#272527] px-6 py-1 rounded-full text-lg font-[800]"> {price} </div>}
+                {price && <div className="bg-[#E1B71C] text-[#272527] px-6 py-1 rounded-full text-lg font-[700]"> {price} </div>}
             </div>
         </div>
     </div>
