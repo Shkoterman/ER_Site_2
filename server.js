@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const { clickcount } = require('./src/api/Counter'); // Импорт обработчика для маршрута /clickcount
 const ClickCountTable = require('./src/models/ClickCountTable'); // Импорт модели для MongoDB
 
+
 const app = express(); // Создаем экземпляр приложения Express
 
 // Подключаем middleware
@@ -23,7 +24,11 @@ mongoose.connect('mongodb://localhost:27017/yourdbname')
   });
 
 // Переменные окружения
-const adminPassword = process.env.ADMIN_PASSWORD; // Пароль администратора из .env
+
+const generateToken = () => {
+  return jwt.sign({ user: 'admin' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+};
+
 const secretKey = process.env.SECRET_KEY || 'your_secret_key'; // Секретный ключ для JWT (по умолчанию)
 
 // Маршрут для записи кликов
@@ -99,11 +104,12 @@ app.get('/clickcount/details/:key', async (req, res) => {
 app.post('/login', (req, res) => {
   const { password } = req.body;
 
-  if (password === adminPassword) { // Проверяем пароль
-    const token = jwt.sign({ access: 'admin' }, secretKey, { expiresIn: '1h' }); // Генерация JWT токена
-    res.json({ token }); // Возвращаем токен
+  // Сравниваем пароль с переменной из .env
+  if (password === process.env.REACT_APP_ADMIN_PASSWORD) {
+    const token = generateToken(); // Функция для генерации токена (например, с использованием JWT)
+    res.json({ token });
   } else {
-    res.status(401).json({ message: 'Неверный пароль' }); // Ошибка аутентификации
+    res.status(401).json({ message: 'Неверный пароль' });
   }
 });
 

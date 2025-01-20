@@ -24,10 +24,6 @@ function getCachedData() {
   return cached ? JSON.parse(cached) : null;
 }
 
-function saveCachedData(data) {
-  localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-}
-
 export const clearCachedData = () => {
   localStorage.removeItem(CACHE_KEY);
   cachedData = null;
@@ -35,11 +31,6 @@ export const clearCachedData = () => {
 };
 
 export const fetchAirtableData = async () => {
-  if (cachedData) {
-    console.log("Используется кэш.");
-    return cachedData;
-  }
-
   try {
     const response = await axios.get(
       `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}?view=${VIEW_NAME}`,
@@ -51,7 +42,7 @@ export const fetchAirtableData = async () => {
     );
 
     cachedData = response.data.records;
-    saveCachedData(cachedData);  // Сохраняем кэш
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cachedData));  // Сохраняем кэш
     return cachedData;
   } catch (error) {
     console.error('Ошибка при запросе данных из Airtable:', error.message);
