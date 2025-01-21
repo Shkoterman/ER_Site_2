@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { clickcount } = require('./src/api/Counter'); // Импорт обработчика для маршрута /clickcount
 const ClickCountTable = require('./src/models/ClickCountTable'); // Импорт модели для MongoDB
+const Cache = require('./src/models/Cache');
 
 const app = express(); // Создаем экземпляр приложения Express
 
@@ -25,6 +26,56 @@ mongoose.connect('mongodb://localhost:27017/yourdbname')
 // Переменные окружения
 const adminPassword = process.env.REACT_APP_ADMIN_PASSWORD; // Пароль администратора из .env
 const secretKey = process.env.SECRET_KEY || 'your_secret_key'; // Секретный ключ для JWT (по умолчанию)
+
+// Маршрут для получения кэшированных данных
+app.get('/cache', async (req, res) => {
+  
+  try {
+    const cachedData = await Cache.findOne({ key: 'airtableData' });
+    if (cachedData) {
+      return res.json(cachedData.data); // Отправляем данные в формате JSON
+    } else {
+      return res.status(404).json({ message: 'Кэш не найден' });
+    }
+  } catch (error) {
+    console.error('Ошибка при получении данных из кэша:', error);
+    return res.status(500).json({ message: 'Ошибка сервера' });
+  }
+});
+
+// Маршрут для записи данных в кэш
+app.post('/cache', async (req, res) => {
+  console.log('123123')
+  try {
+    const cachedData = new Cache({ // Создание нового экземпляра
+      key: 'airtableData',
+      data: req.body.data,
+    });
+
+    // Сохранение данных в базу данных
+    await cachedData.save();
+    res.status(201).json({ message: 'Данные успешно сохранены в кэш!' });
+  } catch (error) {
+    console.error('Ошибка при записи в кэш:', error);
+    res.status(500).json({ message: 'Ошибка сервера' });
+  }
+});
+
+// Маршрут для очистки
+app.delete('/cache', async (req, res) => {
+  try {
+    const { key } = req.body;  // Получаем ключ из тела запроса
+
+    // Здесь код для удаления записи с кэшем, например:
+    await Cache.deleteMany({ key }); // Если используете MongoDB с Mongoose
+
+    res.status(200).json({ message: 'Кэш успешно очищен' });
+  } catch (error) {
+    console.error('Ошибка при удалении кэша:', error);
+    res.status(500).json({ message: 'Ошибка сервера при очистке кэша' });
+  }
+});
+
 
 // Маршрут для записи кликов
 app.post('/clickcount', clickcount);

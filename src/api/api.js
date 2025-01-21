@@ -3,7 +3,6 @@ import { parseISO, format, isToday, isTomorrow, isThisWeek, addWeeks, startOfWee
 import { toZonedTime } from 'date-fns-tz';
 import { ja, ru } from 'date-fns/locale'; // Для локализации на русский язык
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import Cache from '../models/Cache.js';
 
 // Конфигурация Airtable
@@ -20,15 +19,8 @@ tagList.add("Все")
 
 async function getCachedData() {
   try {
-    const cached = await Cache.findOne({ key: 'airtableData' });
-
-    if (cached) {
-      console.log('Данные загружены из кэша');
-      return cached.data;
-    } else {
-      console.log('Кэш пуст, загружаем новые данные...');
-      return await fetchAirtableData();
-    }
+    const response = await axios.get('http://localhost:5000/cache');
+    return response.data; // Получаем данные из кэша с сервера
   } catch (error) {
     console.error('Ошибка при получении данных из кэша:', error);
     return null;
@@ -36,12 +28,9 @@ async function getCachedData() {
 }
 
 async function writeCachedData(newData) {
+  
   try {
-    await Cache.findOneAndUpdate(
-      { key: 'airtableData' },
-      { data: newData, createdAt: new Date() },
-      { upsert: true }
-    );
+    await axios.post('http://localhost:5000/cache', { data: newData });
     console.log('Данные успешно закэшированы.');
   } catch (error) {
     console.error('Ошибка при записи данных в кэш:', error);
@@ -50,7 +39,10 @@ async function writeCachedData(newData) {
 
 export const clearCachedData = async () => {
   try {
-    await Cache.deleteOne({ key: 'airtableData' });
+    // Отправляем запрос на сервер для удаления кэша с ключом 'airtableData'
+    await axios.delete('http://localhost:5000/cache', {
+      data: { key: 'airtableData' },  // Отправляем ключ, по которому удалим кэш
+    });
     console.log('Кэш очищен.');
   } catch (error) {
     console.error('Ошибка при очистке кэша:', error);
@@ -86,11 +78,11 @@ export const fetchAirtableData = async () => {
 
 export const formatAirtableData = async () => {
   //await fetchAirtableData(); //пока так а то гемор
-  const cachedData = await getCachedData(); // Проверяем кэш или загружаем
+  let cachedData = await getCachedData(); // Проверяем кэш или загружаем
 
   if (!cachedData || cachedData.length === 0) {
     console.error("Ошибка: Нет данных после загрузки.");
-    return [];
+    cachedData = await fetchAirtableData();
   }
   const data = cachedData;
   

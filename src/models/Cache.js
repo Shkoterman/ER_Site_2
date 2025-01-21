@@ -1,11 +1,10 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
+// Пример схемы
 const cacheSchema = new mongoose.Schema({
-  key: { type: String, required: true, unique: true },
-  data: { type: Object, required: true },
-  createdAt: { type: Date, default: Date.now, expires: 60 * 60 * 24 }, // Истекает через 24 часа
+  key: { type: String, required: true },
+  data: { type: Array, required: true },
 });
 
 const Cache = mongoose.model('Cache', cacheSchema);
-
-export default Cache;
+module.exports = Cache; // Экспортируем модель
