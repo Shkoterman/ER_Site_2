@@ -11,8 +11,9 @@ const Header = ({ countClick = () => {} }) => {  // Добавляем знач�
   };
 
   const handleLogoClick = () => {
-    //countClick('nav: Календарь'); // Отправляем клик-событие
+    countClick('nav: Календарь'); // Отправляем клик-событие
     navigate('/CalendarGrid'); // Переход на страницу "Календарь"
+    setIsOpen(false);
   };
 
   const handleNavClick = (text) => {
