@@ -8,7 +8,6 @@ const Header = ({ countClick = () => {} }) => {  // Добавляем знач�
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
-    console.log("isOpen:", !isOpen);
   };
 
   const handleLogoClick = () => {
