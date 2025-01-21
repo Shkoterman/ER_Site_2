@@ -140,13 +140,13 @@ const Calendar_grid = () => {
 
   //подсчёт клика
   const countClick = async (inputText) => {
-    try {
+    /*try {
       await axios.post('http://localhost:5000/clickcount', {
         text: inputText,
       });
     } catch (error) {
       console.error('Ошибка при добавлении записи:', error);
-    }
+    }*/
   };
 
   return (

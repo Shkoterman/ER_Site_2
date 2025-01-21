@@ -52,7 +52,7 @@ export const clearCachedData = async () => {
 
 export const fetchAirtableData = async () => {
   try {
-    console.log("Запрос данных из Airtable...");
+    //console.log("Запрос данных из Airtable...");
     const response = await axios.get(
       `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}?view=${VIEW_NAME}`,
       {
@@ -64,21 +64,20 @@ export const fetchAirtableData = async () => {
 
     const newData = response.data.records;
     
-    await writeCachedData(newData); // Сохранение в MongoDB
-    console.log("Данные сохранены в кэше.");
+    //await writeCachedData(newData); // Сохранение в MongoDB
     
     return newData;
 
   } catch (error) {
     console.error('Ошибка при запросе данных из Airtable:', error.message);
-    return await getCachedData();
+    //return await getCachedData();
   }
 };
 
 
 export const formatAirtableData = async () => {
   //await fetchAirtableData(); //пока так а то гемор
-  let cachedData = await getCachedData(); // Проверяем кэш или загружаем
+  let cachedData = await fetchAirtableData(); // Проверяем кэш или загружаем
 
   if (!cachedData || cachedData.length === 0) {
     console.error("Ошибка: Нет данных после загрузки.");
