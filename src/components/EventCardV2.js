@@ -18,18 +18,18 @@ return (
     <div className="h-full flex flex-col justify-between p-3.5 pt-0">
         
         <div className="h-40 px-4">
-            <div class="text-[64px] leading-[48px] font-[600] pt-8 font-[Commissioner]">
-                <span class="tracking-tighter text-white/80">{dataDay}</span>
-                <span class="text-lg font-[300] px-1 opacity-80">/{dataMouth}</span>
+            <div className="text-[64px] leading-[48px] font-[600] pt-8 font-[Commissioner]">
+                <span className="tracking-tighter text-white/80">{dataDay}</span>
+                <span className="text-lg font-[300] px-1 opacity-80">/{dataMouth}</span>
             </div>
-            <div class="text-[13px] font-[500] uppercase pt-0 text-white/80">{weekDay}</div>
-            <div class="text-xs opacity-80 -mt-0.5">{dataStr}</div>
+            <div className="text-[13px] font-[500] uppercase pt-0 text-white/80">{weekDay}</div>
+            <div className="text-xs opacity-80 -mt-0.5">{dataStr}</div>
         </div>
     
         <h3 className="text-[#FEFEFE] text-[19px] font-[700] text-left leading-[21px] pt-6 pb-2 px-4 uppercase2 tracking-wide">{title}</h3>
         
           <div className="flex-1 overflow-hidden text-left text-[14px] leading-[18px] font-[300] tracking-wide px-4 text-[#9c9c9c]">
-            {shortDescription && ( <p class="line-clamp-5">{shortDescription}</p>    )}
+            {shortDescription && ( <p className="line-clamp-5">{shortDescription}</p>    )}
           </div>
      
     
@@ -50,7 +50,7 @@ return (
     
     {imageUrl && (
     
-   <img src={imageUrl} class="object-cover w-[145px] h-[145px] absolute -top-0 right-0 z-1 rounded-bl-full mr-0 mt-0 opacity-90" alt = "..."/>
+   <img src={imageUrl} className="object-cover w-[145px] h-[145px] absolute -top-0 right-0 z-1 rounded-bl-full mr-0 mt-0 opacity-90" alt = "..."/>
         
     
     )}

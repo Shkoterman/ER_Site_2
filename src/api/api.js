@@ -1,37 +1,66 @@
 import axios from 'axios';
 import { parseISO, format, isToday, isTomorrow, isThisWeek, addWeeks, startOfWeek, endOfWeek, isWithinInterval } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
-import { ru } from 'date-fns/locale'; // Для локализации на русский язык
+import { ja, ru } from 'date-fns/locale'; // Для локализации на русский язык
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import Cache from '../models/Cache.js';
 
 // Конфигурация Airtable
 const AIRTABLE_API_KEY = process.env.REACT_APP_AIRTABLE_API_KEY;
 const BASE_ID = process.env.REACT_APP_BASE_ID;
 const TABLE_NAME = process.env.REACT_APP_TABLE_NAME;
 const VIEW_NAME = "for_web_calendar";
-const CACHE_KEY = "airtableData";
 
-
-// Локальный JSON для данных из Airtable
-let cachedData = getCachedData();
 let tagList = new Set(); // набор тэгов 
 let timeList = new Set(); // набор времён (сегодня завтра вот это всё) 
 let globalTimeSpan = String();
 timeList.add("Всегда");
 tagList.add("Все")
 
-function getCachedData() {
-  const cached = localStorage.getItem(CACHE_KEY);
-  return cached ? JSON.parse(cached) : null;
+async function getCachedData() {
+  try {
+    const cached = await Cache.findOne({ key: 'airtableData' });
+
+    if (cached) {
+      console.log('Данные загружены из кэша');
+      return cached.data;
+    } else {
+      console.log('Кэш пуст, загружаем новые данные...');
+      return await fetchAirtableData();
+    }
+  } catch (error) {
+    console.error('Ошибка при получении данных из кэша:', error);
+    return null;
+  }
 }
 
-export const clearCachedData = () => {
-  localStorage.removeItem(CACHE_KEY);
-  cachedData = null;
-  console.log("Кэш очищен.");
+async function writeCachedData(newData) {
+  try {
+    await Cache.findOneAndUpdate(
+      { key: 'airtableData' },
+      { data: newData, createdAt: new Date() },
+      { upsert: true }
+    );
+    console.log('Данные успешно закэшированы.');
+  } catch (error) {
+    console.error('Ошибка при записи данных в кэш:', error);
+  }
+}
+
+export const clearCachedData = async () => {
+  try {
+    await Cache.deleteOne({ key: 'airtableData' });
+    console.log('Кэш очищен.');
+  } catch (error) {
+    console.error('Ошибка при очистке кэша:', error);
+  }
 };
+
 
 export const fetchAirtableData = async () => {
   try {
+    console.log("Запрос данных из Airtable...");
     const response = await axios.get(
       `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}?view=${VIEW_NAME}`,
       {
@@ -41,27 +70,28 @@ export const fetchAirtableData = async () => {
       }
     );
 
-    cachedData = response.data.records;
-    localStorage.setItem(CACHE_KEY, JSON.stringify(cachedData));  // Сохраняем кэш
-    return cachedData;
+    const newData = response.data.records;
+    
+    await writeCachedData(newData); // Сохранение в MongoDB
+    console.log("Данные сохранены в кэше.");
+    
+    return newData;
+
   } catch (error) {
     console.error('Ошибка при запросе данных из Airtable:', error.message);
-    return cachedData; // Возвращаем кэшированные данные, если они есть
+    return await getCachedData();
   }
 };
 
-export const checkCachedData = async () => {  // чек, есть ли кэшированая версия
-  if (!cachedData || cachedData.length === 0) {
-    console.log('Данные отсутствуют в кэше, загружаем из Airtable...');
-    await fetchAirtableData();
-  } else {
-    console.log('Данные найдены в кэше.');
-    return cachedData;    
-  }
-};
 
 export const formatAirtableData = async () => {
-  await checkCachedData(); // чек
+  //await fetchAirtableData(); //пока так а то гемор
+  const cachedData = await getCachedData(); // Проверяем кэш или загружаем
+
+  if (!cachedData || cachedData.length === 0) {
+    console.error("Ошибка: Нет данных после загрузки.");
+    return [];
+  }
   const data = cachedData;
   
   //строка под события с по

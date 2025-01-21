@@ -120,7 +120,7 @@ const Calendar_grid = () => {
           return true;
           
         }
-        console.log(event.shortDescription);
+        //console.log(event.shortDescription);
         return false;
       });
 
