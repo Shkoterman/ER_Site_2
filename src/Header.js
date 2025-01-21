@@ -8,11 +8,17 @@ const Header = ({ countClick = () => {} }) => {  // Добавляем знач�
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+    console.log("isOpen:", !isOpen);
   };
 
   const handleLogoClick = () => {
     //countClick('nav: Календарь'); // Отправляем клик-событие
     navigate('/CalendarGrid'); // Переход на страницу "Календарь"
+  };
+
+  const handleNavClick = (text) => {
+    countClick(text);
+    setIsOpen(false); // Закрываем меню при клике на ссылку
   };
 
   return (
@@ -59,7 +65,7 @@ const Header = ({ countClick = () => {} }) => {  // Добавляем знач�
         <li>
           <Link
             to="/about"
-            onClick={() => countClick('nav: О нас')}
+            onClick={() => handleNavClick('nav: О нас')}
             className="block mt-1.5 py-2 px-4 text-white/60 hover:text-white"
           >
             О нас
@@ -68,7 +74,7 @@ const Header = ({ countClick = () => {} }) => {  // Добавляем знач�
         <li>
           <Link
             to="/CalendarGrid"
-            onClick={() => countClick('nav: Календарь grid')}
+            onClick={() => handleNavClick('nav: Календарь grid')}
             className="block mt-1.5 py-2 px-4 text-white/60 hover:text-white"
           >
             Календарь

@@ -33,7 +33,7 @@ const Footer = () => {
           </a>
         </li>
         <li><a 
-          href="https://www.t.me/ensalada/" target="_blank"
+          href="https://t.me/ensalada" target="_blank"
           onClick={() => countClick('Footer click Telegram')}
           >Telegram</a></li>
         {/*<li><a href="https://www.t.me/ensalada/" target="_blank">Чат</a></li>*/}

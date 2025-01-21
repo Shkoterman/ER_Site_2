@@ -18,14 +18,18 @@ const Calendar_grid = () => {
   const navigate = useNavigate();
 
   const handleCardClick = (event) => {
-    if (event.eventProfeePagelLink !== "") {
-      window.open(event.eventProfeePagelLink, '_blank'); // Открывает profee ссылку в нов вкладке
-      //navigate('/event', { state: event }); // Переход на страницу события
+  const userAgent = navigator.userAgent;
+  const isTelegramBrowser = /Telegram/i.test(userAgent) || /Chrome\/[\d\.]+ Mobile Safari/i.test(userAgent); 
+  if (event.eventProfeePagelLink !== "") {
+    if (isTelegramBrowser) {
+      window.location.href = event.eventProfeePagelLink+'URA'; // Открыть ссылку в текущем окне
     } else {
-      navigate('/event', { state: event }); // Переход на страницу события
+      window.open(event.eventProfeePagelLink+'NEURA', '_blank'); // Открыть в новой вкладке, если не Telegram
     }
+  } else {
+    navigate('/event', { state: event }); // Переход на страницу события
+  }
   };
-  
   
 
   useEffect(() => { // Вызов handleUpdateData при загрузке компонента
