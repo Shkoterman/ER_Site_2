@@ -35,8 +35,13 @@ const Calendar_grid = () => {
   useEffect(() => { // Вызов handleUpdateData при загрузке компонента
     const fetchData = async () => {
       const formattedEvents = await formatAirtableData();
+      timeList.add("Всегда");
+      tagList.add("Все");
+
       setEvents(formattedEvents); // Обновляем состояние
       setFilteredEvents(formattedEvents); // По умолчанию отображаем все события
+      
+      // Устанавливаем начальные значения для фильтров времени
       const initialTimeFilters = Array.from(timeList).reduce((acc, timeTag) => {
         acc[timeTag] = false;
         return acc;
@@ -52,12 +57,35 @@ const Calendar_grid = () => {
     
       setFiltersTimeSet(initialTimeFilters);
       setFiltersTagSet(initialTagFilters);
-      
     };
     fetchData();
     
   }, []); // Пустой массив зависимостей означает вызов только один раз при монтировании
 
+
+  //ЭТОТ МЕТОД ДЛЯ НОВОЙ ФИЛЬТРАЦИИ ПО ВРЕМЕНИ КОГДА МОЖНО ВЫБРАТЬ ТОЛЬКО 1 ФИЛЬТР
+  const handleFilterTimeClick = (filter) => {
+    const newFilters = Object.keys(filtersTimeSet).reduce((acc, key) => {
+      acc[key] = false; // Устанавливаем каждый фильтр в false
+      return acc;
+    }, {});
+    newFilters[filter] = true;
+    setFiltersTimeSet(newFilters);
+    applyFilters(newFilters, filtersTagSet);
+  };
+
+  //ЭТОТ МЕТОД ДЛЯ НОВОЙ ФИЛЬТРАЦИИ ПО ТЭГУ КОГДА МОЖНО ВЫБРАТЬ ТОЛЬКО 1 ФИЛЬТР
+  const handleFilterTagClick = (filter) => {
+    const newFilters = Object.keys(filtersTagSet).reduce((acc, key) => {
+      acc[key] = false; // Устанавливаем каждый фильтр в false
+      return acc;
+    }, {});
+    newFilters[filter] = true;
+    setFiltersTagSet(newFilters);
+      applyFilters(filtersTimeSet, newFilters);
+  };
+
+  /* //ЭТОТ МЕТОД ДЛЯ СТАРОЙ ФИЛЬТРАЦИИ ПО ВРЕМЕНИ КОГДА МОЖНО ВЫБРАТЬ НЕСКОЛЬКО
   const handleFilterTimeClick = (filter) => {
     if (filter === 'Всегда') {
       // Если выбран "Всегда", все фильтры времени становятся активными
@@ -67,7 +95,6 @@ const Calendar_grid = () => {
       }, {});
       setFiltersTimeSet(newFilters);
       applyFilters(newFilters, filtersTagSet);
-      //console.log(newFilters)
     } else {
       // Для других фильтров инвертируем состояние фильтра
       setFiltersTimeSet((prevFilters) => {
@@ -77,14 +104,12 @@ const Calendar_grid = () => {
         const allSame = Object.values(newFiltersCheck).every(val => val === true) || Object.values(newFiltersCheck).every(val => val === false);
         newFilters['Всегда'] = allSame;
         applyFilters(newFilters, filtersTagSet);
-        //console.log(newFilters)
         return newFilters;
-        
       });
     }
-    
-  };
+  };*/
 
+  /* //ЭТОТ МЕТОД ДЛЯ СТАРОЙ ФИЛЬТРАЦИИ ПО ТЭГУ КОГДА МОЖНО ВЫБРАТЬ НЕСКОЛЬКО
   const handleFilterTagClick = (filter) => {
     if (filter === 'Все') {
       // Если выбран "Все", все теги становятся активными
@@ -110,7 +135,7 @@ const Calendar_grid = () => {
         return newFilters;
       });
     }
-  };
+  };*/
   
   const applyFilters = (filtersTimeSet, filtersTagSet) => {
     const filtered = events.filter((event) => {
@@ -122,23 +147,17 @@ const Calendar_grid = () => {
           if (filterKey === 'На этой неделе') return event.isThisWeek;
           if (filterKey === 'На следующей неделе') return event.atNextWeek;
           return true;
-          
         }
-        //console.log(event.shortDescription);
         return false;
       });
-
       // Фильтрация по тегам
       const isTagMatch = Object.entries(filtersTagSet).some(([filterKey, isActive]) => {
         return isActive && event.eventTagList.includes(filterKey);
       });
-
       // Событие должно пройти оба фильтра (по времени и по тегам)
       return isTimeMatch && isTagMatch;
     });
-
-    // Обновляем отфильтрованные события
-    
+    // Обновляем отфильтрованные события    
     setFilteredEvents(filtered);
   };
 
@@ -183,8 +202,14 @@ const Calendar_grid = () => {
       </li>
     ))}
 
+    {/* Разделитель */}
+    <li>
+      <div className="w-px h-8 bg-gray-400 mx-1" />
+    </li>
+
     {/* Сущностные фильтры */}
     {Array.from(tagList).map((tag, index) => (
+      
       <li key={index}>
         <button
           className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer text-[#666666] font-[500] ${

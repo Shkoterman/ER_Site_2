@@ -14,8 +14,7 @@ const VIEW_NAME = "for_web_calendar";
 let tagList = new Set(); // набор тэгов 
 let timeList = new Set(); // набор времён (сегодня завтра вот это всё) 
 let globalTimeSpan = String();
-timeList.add("Всегда");
-tagList.add("Все")
+
 
 async function getCachedData() {
   try {
@@ -212,6 +211,7 @@ export const formatAirtableData = async () => {
     };
   });
 };
+
 
 export { tagList };
 export { timeList };
