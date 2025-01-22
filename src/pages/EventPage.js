@@ -95,7 +95,6 @@ const EventPage = () => {
       />     
 
       <p className="eventPage-price">{event.price}</p>
-      {console.log(event.eventExternalLink, typeof event.eventExternalLink)}
       {/* Кнопка для открытия ссылки на ивент */}
       {event.eventExternalLink.length > 0 ? 
       (

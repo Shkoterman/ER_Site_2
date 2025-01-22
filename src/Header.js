@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useNavigate  } from 'react-router-dom';
+import { Link  } from 'react-router-dom';
 import logoImage from './img/logo_ensalada.png';
 
 const Header = ({ countClick = () => {} }) => {  // Добавляем значение по умолчанию для countClick
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
-  };
-
-  const handleLogoClick = () => {
-    countClick('nav: Календарь'); // Отправляем клик-событие
-    navigate('/CalendarGrid'); // Переход на страницу "Календарь"
-    setIsOpen(false);
   };
 
   const handleNavClick = (text) => {
@@ -27,9 +20,15 @@ const Header = ({ countClick = () => {} }) => {  // Добавляем знач�
       <div className="flex">
         <div 
           className="flex-none w-40 lg:w-48 lg:mt-2 py-2 cursor-pointer" 
-          onClick={handleLogoClick}
+          
         >
-          <img src={logoImage} alt="Logo" />
+          <Link
+            to="/CalendarGrid"
+            onClick={() => handleNavClick('nav: Лого')}
+          >
+            <img src={logoImage} alt="Logo"/>            
+          </Link>
+          
         </div>
         <div className="hidden lg:block lg:w-48 py-4 mt-1 text-[12px] leading-[13px] font-[300] px-1 opacity-50"></div>
       </div>
