@@ -10,10 +10,14 @@ const AIRTABLE_API_KEY = process.env.REACT_APP_AIRTABLE_API_KEY;
 const BASE_ID = process.env.REACT_APP_BASE_ID;
 const TABLE_NAME = process.env.REACT_APP_TABLE_NAME;
 const VIEW_NAME = "for_web_calendar";
+const fieldsToFetch = ['start_date', 'stop_date', 'str_date', 'dont_show_time', 
+  'Name_event', 'short_description', 'event_discriptoin', 'cost_all', 'web_site_tag',
+   'place_name', 'place_adres', 'place_link', 'Описание', 'image', 'web_site_tag', 'external_link', 'profee_page_link'];
 
 let tagList = new Set(); // набор тэгов 
 let timeList = new Set(); // набор времён (сегодня завтра вот это всё) 
 let globalTimeSpan = String();
+
 
 
 async function getCachedData() {
@@ -51,25 +55,22 @@ export const clearCachedData = async () => {
 
 export const fetchAirtableData = async () => {
   try {
-    //console.log("Запрос данных из Airtable...");
-    const response = await axios.get(
-      `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}?view=${VIEW_NAME}`,
-      {
-        headers: {
-          Authorization: `Bearer ${AIRTABLE_API_KEY}`,
-        },
-      }
-    );
+    const fieldsQuery = fieldsToFetch.length ? fieldsToFetch.map(f => `fields[]=${encodeURIComponent(f)}`).join('&') : '';
+    
+    const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}?view=${VIEW_NAME}&${fieldsQuery}`;
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${AIRTABLE_API_KEY}`,
+      },
+    });
 
     const newData = response.data.records;
-    
-    //await writeCachedData(newData); // Сохранение в MongoDB
-    
     return newData;
 
   } catch (error) {
     console.error('Ошибка при запросе данных из Airtable:', error.message);
-    //return await getCachedData();
+    return [];
   }
 };
 
