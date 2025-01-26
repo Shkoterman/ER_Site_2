@@ -1,67 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { formatAirtableData, tagList, timeList, globalTimeSpan } from '../api/api';
+import React, { useState } from 'react';
+import { formatAirtableData } from '../api/airtable/formatAirtableData';
 import EventCard from '../components/EventCardV2';
 import { useNavigate } from 'react-router-dom';
 import '../App.css'; // Импортируем файл стилей
-import axios from 'axios';
 
+export const CalendarGrid = (data) => {
+  const airtbleData = formatAirtableData(data);
 
+  // Локальное состояние для карточек
+  const [events] = useState(() => airtbleData.events); 
+  // Отфильтрованные события
+  const [filteredEvents, setFilteredEvents] = useState(() => airtbleData.events); 
 
-const Calendar_grid = () => {
-  
-  const [events, setEvents] = useState([]); // Локальное состояние для карточек
-  const [filtersTimeSet, setFiltersTimeSet] = useState({}); // Состояние для активных фильтров времени 
-  const [filtersTagSet, setFiltersTagSet] = useState({}); // Состояние для активных фильтров тэгов 
-  const [filteredEvents, setFilteredEvents] = useState([]); // отфильтрованные события
-  
+  // Состояние для активных фильтров времени 
+  const [filtersTimeSet, setFiltersTimeSet] = useState(() => {
+    const initialTimeFilters = Array.from(airtbleData.timeSetByEvents).reduce((acc, timeTag) => {
+      acc[timeTag] = false;
+      return acc;
+    }, {});
+    initialTimeFilters['Всегда'] = true;
+
+    return initialTimeFilters
+  });
+
+  // Состояние для активных фильтров тэгов
+  const [filtersTagSet, setFiltersTagSet] = useState(() => {
+    const initialTagFilters = Array.from(airtbleData.tagsSetByEvents).reduce((acc, tag) => {
+      acc[tag] = false;
+      return acc;
+    }, {});
+    initialTagFilters['Все'] = true;
+
+    return initialTagFilters
+  });
 
   const navigate = useNavigate();
 
   const handleCardClick = (event) => {
   const userAgent = navigator.userAgent;
   const isTelegramBrowser = /Telegram/i.test(userAgent) || /Chrome\/[\d\.]+ Mobile Safari/i.test(userAgent); 
-  if (event.eventProfeePagelLink !== "") {
-    if (isTelegramBrowser) {
-      window.location.href = event.eventProfeePagelLink; // Открыть ссылку в текущем окне
+    if (event.eventProfeePagelLink !== "") {
+      if (isTelegramBrowser) {
+        window.location.href = event.eventProfeePagelLink; // Открыть ссылку в текущем окне
+      } else {
+        window.open(event.eventProfeePagelLink, '_blank'); // Открыть в новой вкладке, если не Telegram
+      }
     } else {
-      window.open(event.eventProfeePagelLink, '_blank'); // Открыть в новой вкладке, если не Telegram
+      navigate('/event', { state: event }); // Переход на страницу события
     }
-  } else {
-    navigate('/event', { state: event }); // Переход на страницу события
-  }
   };
-  
-
-  useEffect(() => { // Вызов handleUpdateData при загрузке компонента
-    const fetchData = async () => {
-      const formattedEvents = await formatAirtableData();
-      timeList.add("Всегда");
-      tagList.add("Все");
-
-      setEvents(formattedEvents); // Обновляем состояние
-      setFilteredEvents(formattedEvents); // По умолчанию отображаем все события
-      
-      // Устанавливаем начальные значения для фильтров времени
-      const initialTimeFilters = Array.from(timeList).reduce((acc, timeTag) => {
-        acc[timeTag] = false;
-        return acc;
-      }, {});
-      initialTimeFilters['Всегда'] = true;
-    
-      // Устанавливаем начальные значения для фильтров тегов
-      const initialTagFilters = Array.from(tagList).reduce((acc, tag) => {
-        acc[tag] = false;
-        return acc;
-      }, {});
-      initialTagFilters['Все'] = true;
-    
-      setFiltersTimeSet(initialTimeFilters);
-      setFiltersTagSet(initialTagFilters);
-    };
-    fetchData();
-    
-  }, []); // Пустой массив зависимостей означает вызов только один раз при монтировании
-
 
   //ЭТОТ МЕТОД ДЛЯ НОВОЙ ФИЛЬТРАЦИИ ПО ВРЕМЕНИ КОГДА МОЖНО ВЫБРАТЬ ТОЛЬКО 1 ФИЛЬТР
   const handleFilterTimeClick = (filter) => {
@@ -141,7 +128,7 @@ const Calendar_grid = () => {
     const filtered = events.filter((event) => {
       // Фильтрация по времени
       const isTimeMatch = filtersTimeSet['Всегда'] ||  Object.keys(filtersTimeSet).some((filterKey) => {
-        if (timeList.has(filterKey) && filtersTimeSet[filterKey]) {
+        if (airtbleData.timeSetByEvents.has(filterKey) && filtersTimeSet[filterKey]) {
           if (filterKey === 'Сегодня') return event.isToday;
           if (filterKey === 'Завтра') return event.isTomorrow;
           if (filterKey === 'На этой неделе') return event.isThisWeek;
@@ -179,14 +166,14 @@ const Calendar_grid = () => {
       <div className="py-12">
         <div className="pb-2 lg:pl-6">
             <h1 className="text-5xl font-[600] text-[#FDFCF6]">События Барселоны</h1>
-            <div className="pt-2 lg:pt-0 py-1 text-2xl font-[300] text-[#676767]">{globalTimeSpan}</div>
+            <div className="pt-2 lg:pt-0 py-1 text-2xl font-[300] text-[#676767]">{airtbleData.globalTimeSpan}</div>
         </div>
 
         <div className="lg:px-6 pt-4 pb-4 sticky z-20 bg-[#222221] top-0 overflow-x-scroll lg:overflow-hidden">
   <ul className="flex gap-3 text-center text-sm text-[#9c9c9c] whitespace-nowrap">
     
     {/* Временные фильтры */}
-    {Array.from(timeList).map((timeTag, index) => (
+    {Array.from(airtbleData.timeSetByEvents).map((timeTag, index) => (
       <li key={index}>
         <button
           className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer text-[#666666] font-[500] ${
@@ -208,7 +195,7 @@ const Calendar_grid = () => {
     </li>
 
     {/* Сущностные фильтры */}
-    {Array.from(tagList).map((tag, index) => (
+    {Array.from(airtbleData.tagsSetByEvents).map((tag, index) => (
       
       <li key={index}>
         <button
@@ -243,10 +230,5 @@ const Calendar_grid = () => {
       </div>
     </div>
   );
-  
-
-  
-
 };
 
-export default Calendar_grid;

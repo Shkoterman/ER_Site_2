@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { QueryClient } from '@tanstack/react-query'
+
 import CountOfString from '../components/CountOfString';
 import EventDetails from '../components/EventDetails';
-import { fetchAirtableData, clearCachedData } from '../api/api';
+import { clearCachedData } from '../api/api';
+import { QUERY_KEYS } from '../constants/queryKeys'
 
 const ControlPanel = () => {
+  const queryClient = new QueryClient()
   const [selectedKey, setSelectedKey] = useState(null);
 
   const navigate = useNavigate();
@@ -19,9 +23,8 @@ const ControlPanel = () => {
 
 
   const handleClearAndFetch = async () => {
-    
     clearCachedData();
-    fetchAirtableData();
+    queryClient.resetQueries({ queryKey: QUERY_KEYS.AIRTABLE_DATA, exact: true })
   };
 
   return (
