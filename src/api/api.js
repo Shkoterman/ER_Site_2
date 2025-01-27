@@ -12,7 +12,8 @@ const TABLE_NAME = process.env.REACT_APP_TABLE_NAME;
 const VIEW_NAME = "for_web_calendar";
 const fieldsToFetch = ['start_date', 'stop_date', 'str_date', 'dont_show_time', 
   'Name_event', 'short_description', 'event_discriptoin', 'cost_all', 'web_site_tag',
-   'place_name', 'place_adres', 'place_link', 'Описание', 'image', 'web_site_tag', 'external_link', 'profee_page_link'];
+   'place_name', 'place_adres', 'place_link', 'Описание', 'image', 'web_site_tag', 'external_link', 'profee_page_link',
+  'its_promoted_event', 'Свободных мест'];
 
 let tagList = new Set(); // набор тэгов 
 let timeList = new Set(); // набор времён (сегодня завтра вот это всё) 
@@ -76,7 +77,6 @@ export const fetchAirtableData = async () => {
 
 
 export const formatAirtableData = async () => {
-  //await fetchAirtableData(); //пока так а то гемор
   let cachedData = await fetchAirtableData(); // Проверяем кэш или загружаем
 
   if (!cachedData || cachedData.length === 0) {
@@ -177,6 +177,14 @@ export const formatAirtableData = async () => {
       record.fields.web_site_tag.forEach(tag => tagList.add(tag.trim())); // Добавляем теги в Set
     }
     
+    const soldout = record.fields['Свободных мест']>0 
+      ?''
+      :'солдаут';
+
+    const promotedEvent = record.fields.its_promoted_event
+      ? 'промо ивент'
+      : '';
+    
     return {
       title: formateTitle,
       time: formattedStartData,
@@ -208,6 +216,9 @@ export const formatAirtableData = async () => {
       eventTagList: record.fields.web_site_tag ? [...record.fields.web_site_tag, 'Все'] : ['Все'],
       eventExternalLink: record.fields.external_link?.trim() || '',
       eventProfeePagelLink: record.fields.profee_page_link?.trim() || '',
+      soldout: soldout,
+      promotedEvent: promotedEvent,
+      
       
     };
   });

@@ -4,7 +4,7 @@ import '../App.css'; // Импортируем стили из App.css
    
          
 
-const EventCard = ({ title, time, address, shortDescription, price, imageUrl, weekDay, dataDay, dataMouth, dataTime, placeLink, placeAdres, placeName, dataStr }) => {
+const EventCard = ({ title, time, shortDescription, price, imageUrl, weekDay, dataDay, dataMouth, dataTime, placeName, dataStr, promotedEvent, soldout }) => {
     
     // bg-gradient-to-t from-[#333033] from-30% via-[#333033]/5 via-60% to-[#333033]/30 to-100%
     
