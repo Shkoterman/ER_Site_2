@@ -11,7 +11,6 @@ async function getCachedData() {
 }
 
 async function writeCachedData(newData) {
-  
   try {
     await axios.post('http://localhost:5000/cache', { data: newData });
     console.log('Данные успешно закэшированы.');
@@ -24,7 +23,7 @@ export const clearCachedData = async () => {
   try {
     // Отправляем запрос на сервер для удаления кэша с ключом 'airtableData'
     await axios.delete('http://localhost:5000/cache', {
-      data: { key: 'airtableData' },  // Отправляем ключ, по которому удалим кэш
+      data: { key: 'airtableData' }, // Отправляем ключ, по которому удалим кэш
     });
     console.log('Кэш очищен.');
   } catch (error) {

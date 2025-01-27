@@ -1,3 +1,3 @@
 export const QUERY_KEYS = {
-    AIRTABLE_DATA: ['airtableData']
-}
+  AIRTABLE_DATA: ['airtableData'],
+};

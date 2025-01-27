@@ -1,6 +1,5 @@
 /* Общие стили для страницы */
 body {
-  
   font-family: 'Arial', sans-serif;
   margin: 0;
   padding: 0;
@@ -30,7 +29,8 @@ body {
 }
 
 /* Акцентные стили для выделенных элементов */
-button, .App-link {
+button,
+.App-link {
   color: #ff5722; /* Яркий оранжевый цвет для кнопок и ссылок */
   text-decoration: none;
 }
@@ -124,7 +124,11 @@ button, .App-link {
   left: 0;
   width: 100%;
   height: 20px;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, 555555(0, 0%, 100%) 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    555555 (0, 0%, 100%) 100%
+  );
 }
 /* App.css */
 
@@ -153,7 +157,10 @@ button, .App-link {
 /* Контейнер для карточек */
 .event-cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Адаптивная ширина */
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(300px, 1fr)
+  ); /* Адаптивная ширина */
   grid-auto-rows: auto; /* Высота строк зависит от содержимого */
   gap: 12px; /* Отступ между карточками */
   justify-content: center; /* Центрирование содержимого */
@@ -326,9 +333,7 @@ button, .App-link {
   margin-top: 20px;
 }
 
-
 /* --- ДЛЯ eventPage --- */
-
 
 .eventPage-container {
   max-width: 800px;
@@ -385,7 +390,6 @@ button, .App-link {
   border-radius: 8px;
   font-size: 0.9rem;
   font-weight: bold;
-  
 }
 /* --- кнопки --- */
 .eventPage-button {
@@ -401,7 +405,9 @@ button, .App-link {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
 }
 
 .eventPage-button:hover {
@@ -427,7 +433,9 @@ button, .App-link {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
 }
 
 .eventPage-address-button:hover {
@@ -440,13 +448,10 @@ button, .App-link {
   transform: scale(0.98);
 }
 
-
 /* --- ДЛЯ loginpage --- */
-
 
 /* Обертка для всего контейнера */
 .loginPage-container {
-  
   display: flex; /* Используем Flexbox для центрирования */
   justify-content: center; /* Центрируем по горизонтали */
   align-items: center; /* Центрируем по вертикали */
@@ -491,7 +496,9 @@ button, .App-link {
   font-size: 16px; /* Размер шрифта */
   font-family: 'Montserrat', sans-serif; /* Шрифт внутри кнопки */
   cursor: pointer; /* Курсор в виде руки */
-  transition: background-color 0.3s ease, border-color 0.3s ease; /* Плавное изменение фона и цвета обводки */
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease; /* Плавное изменение фона и цвета обводки */
 }
 
 /* Стили для кнопки при наведении */
@@ -503,16 +510,14 @@ button, .App-link {
 
 /* Стили для текста ошибки */
 .loginPage-error,
-.loginPage-placeholder{
+.loginPage-placeholder {
   color: #e9e9e9;
   margin-top: 10px;
   font-size: 14px;
   font-family: 'Montserrat', sans-serif;
 }
 
-
 /* --- ДЛЯ controlpanel --- */
-
 
 .controlPanel-container {
   padding: 20px;
@@ -583,7 +588,8 @@ h2 {
 }
 
 /* Стили для кнопок */
-.delete-btn, .controlpanel-details-btn {
+.delete-btn,
+.controlpanel-details-btn {
   background-color: transparent;
   border: none;
   font-size: 18px;
@@ -616,4 +622,3 @@ h2 {
 .count-of-string-table td:first-child {
   border-left: none;
 }
-

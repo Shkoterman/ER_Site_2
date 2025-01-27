@@ -15,11 +15,12 @@ app.use(cors()); // Разрешаем CORS-запросы
 app.use(bodyParser.json()); // Парсим JSON-тело запросов
 
 // Подключение к MongoDB
-mongoose.connect('mongodb://localhost:27017/yourdbname')
+mongoose
+  .connect('mongodb://localhost:27017/yourdbname')
   .then(() => {
     console.log('Connected to MongoDB');
   })
-  .catch(err => {
+  .catch((err) => {
     console.error('Database connection error:', err);
   });
 
@@ -29,7 +30,6 @@ const secretKey = process.env.SECRET_KEY || 'your_secret_key'; // Секретн
 
 // Маршрут для получения кэшированных данных
 app.get('/cache', async (req, res) => {
-  
   try {
     const cachedData = await Cache.findOne({ key: 'airtableData' });
     if (cachedData) {
@@ -45,9 +45,10 @@ app.get('/cache', async (req, res) => {
 
 // Маршрут для записи данных в кэш
 app.post('/cache', async (req, res) => {
-  console.log('123123')
+  console.log('123123');
   try {
-    const cachedData = new Cache({ // Создание нового экземпляра
+    const cachedData = new Cache({
+      // Создание нового экземпляра
       key: 'airtableData',
       data: req.body.data,
     });
@@ -64,7 +65,7 @@ app.post('/cache', async (req, res) => {
 // Маршрут для очистки
 app.delete('/cache', async (req, res) => {
   try {
-    const { key } = req.body;  // Получаем ключ из тела запроса
+    const { key } = req.body; // Получаем ключ из тела запроса
 
     // Здесь код для удаления записи с кэшем, например:
     await Cache.deleteMany({ key }); // Если используете MongoDB с Mongoose
@@ -75,7 +76,6 @@ app.delete('/cache', async (req, res) => {
     res.status(500).json({ message: 'Ошибка сервера при очистке кэша' });
   }
 });
-
 
 // Маршрут для записи кликов
 app.post('/clickcount', clickcount);
@@ -94,7 +94,7 @@ app.get('/clickcount/count', async (req, res) => {
 app.get('/clickcount/strings', async (req, res) => {
   try {
     // Получаем все записи из коллекции ClickCountTable
-    const records = await ClickCountTable.find(); 
+    const records = await ClickCountTable.find();
 
     const stringCounts = {};
 
@@ -131,7 +131,7 @@ app.delete('/clickcount/strings/:text', async (req, res) => {
 app.get('/clickcount/details/:key', async (req, res) => {
   try {
     const key = decodeURIComponent(req.params.key);
-    
+
     // Ищем записи, где поле "text" совпадает с переданным ключом
     const results = await ClickCountTable.find({ text: key });
 
@@ -150,7 +150,8 @@ app.get('/clickcount/details/:key', async (req, res) => {
 app.post('/login', (req, res) => {
   const { password } = req.body;
 
-  if (password === adminPassword) { // Проверяем пароль
+  if (password === adminPassword) {
+    // Проверяем пароль
     const token = jwt.sign({ access: 'admin' }, secretKey, { expiresIn: '1h' }); // Генерация JWT токена
     res.json({ token }); // Возвращаем токен
   } else {
@@ -177,8 +178,6 @@ app.get('/controlpanel', (req, res) => {
     res.status(403).json({ message: 'Неавторизованный доступ' }); // Ошибка проверки токена
   }
 });
-
-
 
 // Запуск сервера
 app.listen(5000, () => {
