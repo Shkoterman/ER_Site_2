@@ -189,7 +189,7 @@ export const formatAirtableData = ({ data }) => {
         isTomorrow: isTomorrowEvent,
         isThisWeek: isThisWeekEvent,
         atNextWeek: atNextWeekEvent,
-        //eventTagList: record.fields.web_site_tag ? [...record.fields.web_site_tag, 'Все'] : ['Все'],
+        eventTagList: record.fields.web_site_tag ? [...record.fields.web_site_tag, 'Все'] : ['Все'],
         eventExternalLink: record.fields.external_link?.trim() || '',
         eventProfeePagelLink: record.fields.profee_page_link?.trim() || '',
 
