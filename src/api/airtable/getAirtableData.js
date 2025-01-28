@@ -31,7 +31,6 @@ export const getAirtableData = async () => {
     : '';
 
   const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}?view=${VIEW_NAME}&${fieldsQuery}`;
-
   return await axios.get(url, {
     headers: {
       Authorization: `Bearer ${AIRTABLE_API_KEY}`,

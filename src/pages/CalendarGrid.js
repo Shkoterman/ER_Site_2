@@ -173,7 +173,6 @@ export const CalendarGrid = (data) => {
       console.error('Ошибка при добавлении записи:', error);
     }*/
   };
-  console.log(airtbleData.tagsSetByEvents)
   return (
     <div className='lg:flex flex-col gap-8 p-4 pb-24 bg-[#222221] text-[#70706c]'>
       <div className='py-12'>
@@ -193,8 +192,8 @@ export const CalendarGrid = (data) => {
               <li key={index}>
                 <button
                   className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer text-[#666666] font-[500] ${filtersTimeSet[timeTag]
-                      ? 'bg-white text-[#333333] hover:text-black'
-                      : ''
+                    ? 'bg-white text-[#333333] hover:text-black'
+                    : ''
                     }`}
                   onClick={() => {
                     handleFilterTimeClick(timeTag);
@@ -220,8 +219,8 @@ export const CalendarGrid = (data) => {
               <li key={index}>
                 <button
                   className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer text-[#666666] font-[500] ${filtersTagSet[tag]
-                      ? 'bg-white text-[#333333] hover:text-black'
-                      : ''
+                    ? 'bg-white text-[#333333] hover:text-black'
+                    : ''
                     }`}
                   onClick={() => {
                     handleFilterTagClick(tag);
