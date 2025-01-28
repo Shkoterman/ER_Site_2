@@ -8,7 +8,9 @@ const CountOfString = ({ onDetailsClick }) => {
   useEffect(() => {
     const fetchStringCounts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/clickcount/strings');
+        const response = await axios.get(
+          'http://localhost:5000/clickcount/strings'
+        );
         setStringCounts(response.data);
       } catch (error) {
         console.error('Ошибка при получении количества строк:', error);
@@ -33,9 +35,9 @@ const CountOfString = ({ onDetailsClick }) => {
   };
 
   return (
-    <div className="count-of-string-container">
+    <div className='count-of-string-container'>
       <h2>Счётчики</h2>
-      <table className="count-of-string-table">
+      <table className='count-of-string-table'>
         <thead>
           <tr>
             <th>Счётчик</th>
@@ -49,8 +51,18 @@ const CountOfString = ({ onDetailsClick }) => {
               <td>{key}</td>
               <td>{value}</td>
               <td>
-                <button onClick={() => handleDelete(key)} className="delete-btn">❌</button>
-                <button onClick={() => onDetailsClick(key)} className="controlpanel-details-btn">📊</button>
+                <button
+                  onClick={() => handleDelete(key)}
+                  className='delete-btn'
+                >
+                  ❌
+                </button>
+                <button
+                  onClick={() => onDetailsClick(key)}
+                  className='controlpanel-details-btn'
+                >
+                  📊
+                </button>
               </td>
             </tr>
           ))}

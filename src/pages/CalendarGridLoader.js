@@ -1,19 +1,19 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query'
-import { CalendarGrid } from './CalendarGrid'
+import { useQuery } from '@tanstack/react-query';
+import { CalendarGrid } from './CalendarGrid';
 
-import { getAirtableData } from '../api/airtable/getAirtableData'
-import { QUERY_KEYS } from '../constants/queryKeys'
+import { getAirtableData } from '../api/airtable/getAirtableData';
+import { QUERY_KEYS } from '../constants/queryKeys';
 
 export const CalendarGridLoader = () => {
   const { isPending, isError, data, error } = useQuery({
     queryKey: QUERY_KEYS.AIRTABLE_DATA,
-    queryFn: getAirtableData
-  })
+    queryFn: getAirtableData,
+  });
 
   if (isPending) {
     // Добавить состояние загрузки
-    return null
+    return null;
   }
 
   if (isError) {
@@ -22,5 +22,5 @@ export const CalendarGridLoader = () => {
     return null;
   }
 
-  return <CalendarGrid data={data.data.records} />
-}
+  return <CalendarGrid data={data.data.records} />;
+};

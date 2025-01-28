@@ -8,38 +8,48 @@ export const CalendarGrid = (data) => {
   const airtbleData = formatAirtableData(data);
 
   // Локальное состояние для карточек
-  const [events] = useState(() => airtbleData.events); 
+  const [events] = useState(() => airtbleData.events);
   // Отфильтрованные события
-  const [filteredEvents, setFilteredEvents] = useState(() => airtbleData.events); 
+  const [filteredEvents, setFilteredEvents] = useState(
+    () => airtbleData.events
+  );
 
-  // Состояние для активных фильтров времени 
+  // Состояние для активных фильтров времени
   const [filtersTimeSet, setFiltersTimeSet] = useState(() => {
-    const initialTimeFilters = Array.from(airtbleData.timeSetByEvents).reduce((acc, timeTag) => {
-      acc[timeTag] = false;
-      return acc;
-    }, {});
+    const initialTimeFilters = Array.from(airtbleData.timeSetByEvents).reduce(
+      (acc, timeTag) => {
+        acc[timeTag] = false;
+        return acc;
+      },
+      {}
+    );
     initialTimeFilters['Всегда'] = true;
 
-    return initialTimeFilters
+    return initialTimeFilters;
   });
 
   // Состояние для активных фильтров тэгов
   const [filtersTagSet, setFiltersTagSet] = useState(() => {
-    const initialTagFilters = Array.from(airtbleData.tagsSetByEvents).reduce((acc, tag) => {
-      acc[tag] = false;
-      return acc;
-    }, {});
+    const initialTagFilters = Array.from(airtbleData.tagsSetByEvents).reduce(
+      (acc, tag) => {
+        acc[tag] = false;
+        return acc;
+      },
+      {}
+    );
     initialTagFilters['Все'] = true;
 
-    return initialTagFilters
+    return initialTagFilters;
   });
 
   const navigate = useNavigate();
 
   const handleCardClick = (event) => {
-  const userAgent = navigator.userAgent;
-  const isTelegramBrowser = /Telegram/i.test(userAgent) || /Chrome\/[\d\.]+ Mobile Safari/i.test(userAgent); 
-    if (event.eventProfeePagelLink !== "") {
+    const userAgent = navigator.userAgent;
+    const isTelegramBrowser =
+      /Telegram/i.test(userAgent) ||
+      /Chrome\/[\d\.]+ Mobile Safari/i.test(userAgent);
+    if (event.eventProfeePagelLink !== '') {
       if (isTelegramBrowser) {
         window.location.href = event.eventProfeePagelLink; // Открыть ссылку в текущем окне
       } else {
@@ -69,7 +79,7 @@ export const CalendarGrid = (data) => {
     }, {});
     newFilters[filter] = true;
     setFiltersTagSet(newFilters);
-      applyFilters(filtersTimeSet, newFilters);
+    applyFilters(filtersTimeSet, newFilters);
   };
 
   /* //ЭТОТ МЕТОД ДЛЯ СТАРОЙ ФИЛЬТРАЦИИ ПО ВРЕМЕНИ КОГДА МОЖНО ВЫБРАТЬ НЕСКОЛЬКО
@@ -123,20 +133,25 @@ export const CalendarGrid = (data) => {
       });
     }
   };*/
-  
+
   const applyFilters = (filtersTimeSet, filtersTagSet) => {
     const filtered = events.filter((event) => {
       // Фильтрация по времени
-      const isTimeMatch = filtersTimeSet['Всегда'] ||  Object.keys(filtersTimeSet).some((filterKey) => {
-        if (airtbleData.timeSetByEvents.has(filterKey) && filtersTimeSet[filterKey]) {
-          if (filterKey === 'Сегодня') return event.isToday;
-          if (filterKey === 'Завтра') return event.isTomorrow;
-          if (filterKey === 'На этой неделе') return event.isThisWeek;
-          if (filterKey === 'На следующей неделе') return event.atNextWeek;
-          return true;
-        }
-        return false;
-      });
+      const isTimeMatch =
+        filtersTimeSet['Всегда'] ||
+        Object.keys(filtersTimeSet).some((filterKey) => {
+          if (
+            airtbleData.timeSetByEvents.has(filterKey) &&
+            filtersTimeSet[filterKey]
+          ) {
+            if (filterKey === 'Сегодня') return event.isToday;
+            if (filterKey === 'Завтра') return event.isTomorrow;
+            if (filterKey === 'На этой неделе') return event.isThisWeek;
+            if (filterKey === 'На следующей неделе') return event.atNextWeek;
+            return true;
+          }
+          return false;
+        });
       // Фильтрация по тегам
       const isTagMatch = Object.entries(filtersTagSet).some(([filterKey, isActive]) => {
         return isActive && airtbleData.tagsSetByEvents.has(filterKey);
@@ -144,7 +159,7 @@ export const CalendarGrid = (data) => {
       // Событие должно пройти оба фильтра (по времени и по тегам)
       return isTimeMatch && isTagMatch;
     });
-    // Обновляем отфильтрованные события    
+    // Обновляем отфильтрованные события
     setFilteredEvents(filtered);
   };
 
@@ -160,75 +175,86 @@ export const CalendarGrid = (data) => {
   };
   console.log(airtbleData.tagsSetByEvents)
   return (
-    <div className="lg:flex flex-col gap-8 p-4 pb-24 bg-[#222221] text-[#70706c]">
-
-      
-      <div className="py-12">
-        <div className="pb-2 lg:pl-6">
-            <h1 className="text-5xl font-[600] text-[#FDFCF6]">События Барселоны</h1>
-            <div className="pt-2 lg:pt-0 py-1 text-2xl font-[300] text-[#676767]">{airtbleData.globalTimeSpan}</div>
+    <div className='lg:flex flex-col gap-8 p-4 pb-24 bg-[#222221] text-[#70706c]'>
+      <div className='py-12'>
+        <div className='pb-2 lg:pl-6'>
+          <h1 className='text-5xl font-[600] text-[#FDFCF6]'>
+            События Барселоны
+          </h1>
+          <div className='pt-2 lg:pt-0 py-1 text-2xl font-[300] text-[#676767]'>
+            {airtbleData.globalTimeSpan}
+          </div>
         </div>
 
-        <div className="lg:px-6 pt-4 pb-4 sticky z-20 bg-[#222221] top-0 overflow-x-scroll lg:overflow-hidden">
-  <ul className="flex gap-3 text-center text-sm text-[#9c9c9c] whitespace-nowrap">
-    
-    {/* Временные фильтры */}
-    {Array.from(airtbleData.timeSetByEvents).map((timeTag, index) => (
-      <li key={index}>
-        <button
-          className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer text-[#666666] font-[500] ${
-            filtersTimeSet[timeTag] ? 'bg-white text-[#333333] hover:text-black' : ''
-          }`}
-          onClick={() => {
-            handleFilterTimeClick(timeTag);
-            countClick(filtersTimeSet[timeTag] ? `filter off: ${timeTag}` : `filter on: ${timeTag}`);
-          }}
-        >
-          {timeTag}
-        </button>
-      </li>
-    ))}
+        <div className='lg:px-6 pt-4 pb-4 sticky z-20 bg-[#222221] top-0 overflow-x-scroll lg:overflow-hidden'>
+          <ul className='flex gap-3 text-center text-sm text-[#9c9c9c] whitespace-nowrap'>
+            {/* Временные фильтры */}
+            {Array.from(airtbleData.timeSetByEvents).map((timeTag, index) => (
+              <li key={index}>
+                <button
+                  className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer text-[#666666] font-[500] ${filtersTimeSet[timeTag]
+                      ? 'bg-white text-[#333333] hover:text-black'
+                      : ''
+                    }`}
+                  onClick={() => {
+                    handleFilterTimeClick(timeTag);
+                    countClick(
+                      filtersTimeSet[timeTag]
+                        ? `filter off: ${timeTag}`
+                        : `filter on: ${timeTag}`
+                    );
+                  }}
+                >
+                  {timeTag}
+                </button>
+              </li>
+            ))}
 
-    {/* Разделитель */}
-    <li>
-      <div className="w-px h-8 bg-gray-400 mx-1" />
-    </li>
+            {/* Разделитель */}
+            <li>
+              <div className='w-px h-8 bg-gray-400 mx-1' />
+            </li>
 
-    {/* Сущностные фильтры */}
-    {Array.from(airtbleData.tagsSetByEvents).map((tag, index) => (
-      
-      <li key={index}>
-        <button
-          className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer text-[#666666] font-[500] ${
-            filtersTagSet[tag] ? 'bg-white text-[#333333] hover:text-black' : ''
-          }`}
-          onClick={() => {
-            handleFilterTagClick(tag);
-            countClick(filtersTagSet[tag] ? `filter off: ${tag}` : `filter on: ${tag}`);
-          }}
-        >
-          {tag}
-        </button>
-      </li>
-    ))}
-    
-  </ul>
-</div>
+            {/* Сущностные фильтры */}
+            {Array.from(airtbleData.tagsSetByEvents).map((tag, index) => (
+              <li key={index}>
+                <button
+                  className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer text-[#666666] font-[500] ${filtersTagSet[tag]
+                      ? 'bg-white text-[#333333] hover:text-black'
+                      : ''
+                    }`}
+                  onClick={() => {
+                    handleFilterTagClick(tag);
+                    countClick(
+                      filtersTagSet[tag]
+                        ? `filter off: ${tag}`
+                        : `filter on: ${tag}`
+                    );
+                  }}
+                >
+                  {tag}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-      {/* Контейнер для карточек */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border-l border-t border-[#fdfdfd]/10 lg:mx-6 rounded-tl-2xl mt-4 lg:mt-0">
-        {filteredEvents.map((event, index) => (
-          <div key={index} className="cursor-pointer" 
-            onClick={() => {
-              handleCardClick(event);
-              countClick('event card click: ' + event.title);
-            }}>
-            <EventCard {...event} />
-          </div>
-        ))}
-      </div>
+        {/* Контейнер для карточек */}
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border-l border-t border-[#fdfdfd]/10 lg:mx-6 rounded-tl-2xl mt-4 lg:mt-0'>
+          {filteredEvents.map((event, index) => (
+            <div
+              key={index}
+              className='cursor-pointer'
+              onClick={() => {
+                handleCardClick(event);
+                countClick('event card click: ' + event.title);
+              }}
+            >
+              <EventCard {...event} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
-

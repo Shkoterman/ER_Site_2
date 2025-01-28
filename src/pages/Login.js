@@ -7,7 +7,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  
+
   const handleLogin = async () => {
     try {
       const response = await axios.post('http://localhost:5000/login', {
@@ -21,20 +21,22 @@ const LoginPage = () => {
       setError('лол, нет');
     }
   };
-    return (
-        <div className="loginPage-container">
-        <div className="loginPage-placeholder">
-            <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Введите пароль"
-            />
-            <button className="loginPage-button" onClick={handleLogin}>Войти</button>
-            {error && <div className="loginPage-error">{error}</div>}
-        </div>
-        </div>
-    );
+  return (
+    <div className='loginPage-container'>
+      <div className='loginPage-placeholder'>
+        <input
+          type='password'
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder='Введите пароль'
+        />
+        <button className='loginPage-button' onClick={handleLogin}>
+          Войти
+        </button>
+        {error && <div className='loginPage-error'>{error}</div>}
+      </div>
+    </div>
+  );
 };
 
 export default LoginPage;
