@@ -139,7 +139,7 @@ export const CalendarGrid = (data) => {
       });
       // Фильтрация по тегам
       const isTagMatch = Object.entries(filtersTagSet).some(([filterKey, isActive]) => {
-        return isActive && event.eventTagList.includes(filterKey);
+        return isActive && airtbleData.tagsSetByEvents.has(filterKey);
       });
       // Событие должно пройти оба фильтра (по времени и по тегам)
       return isTimeMatch && isTagMatch;
@@ -158,7 +158,7 @@ export const CalendarGrid = (data) => {
       console.error('Ошибка при добавлении записи:', error);
     }*/
   };
-
+  console.log(airtbleData.tagsSetByEvents)
   return (
     <div className="lg:flex flex-col gap-8 p-4 pb-24 bg-[#222221] text-[#70706c]">
 
