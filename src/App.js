@@ -1,7 +1,7 @@
 import React from 'react';
-import { HashRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
+import ReactGA from "react-ga4"; // Импортируем GA
 import Header from './Header'; // Импортируем компонент Header
 import ControlPanel from './pages/ControlPanel';
 import Login from './pages/Login';
@@ -13,6 +13,20 @@ import Footer from './Footer';
 import './App.css';
 
 const queryClient = new QueryClient();
+
+// Инициализируем GA
+ReactGA.initialize("G-RPP0R0RCVL"); // Вставь свой Google Analytics ID
+
+// Отслеживание изменения маршрутов
+const Analytics = () => {
+  const location = useLocation();
+
+  React.useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: location.pathname });
+  }, [location]);
+
+  return null;
+};
 
 export const App = () => {
   // Подсчёт клика
@@ -28,7 +42,8 @@ export const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
+      <BrowserRouter>
+        <Analytics /> {/* Добавляем компонент отслеживания */}
         <div className='grid grid-cols-1 min-h-screen'>
           {/* Навигация */}
           <Header countClick={countClick} />
@@ -41,7 +56,7 @@ export const App = () => {
               <Route path='/about' element={<About />} />
               <Route path='/CalendarGrid' element={<CalendarGridLoader />} />
               {/*<Route path="/CalendarColumns" element={<CalendarColumns />} />*/}
-              <Route path='/event' element={<EventPage />} />{' '}
+              <Route path='/event/:id' element={<EventPage />} />
               {/* Страница события */}
               <Route path='/controlpanel' element={<ControlPanel />} />
               <Route path='/login' element={<Login />} />
@@ -51,7 +66,7 @@ export const App = () => {
           {/* Футер */}
           <Footer />
         </div>
-      </Router>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 };

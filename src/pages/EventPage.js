@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { marked } from 'marked';
 import '../App.css'; // Импортируем стили
 

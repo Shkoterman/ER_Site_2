@@ -6,7 +6,7 @@ import '../App.css'; // Импортируем файл стилей
 
 export const CalendarGrid = (data) => {
   const airtbleData = formatAirtableData(data);
-
+  console.log(airtbleData);
   // Локальное состояние для карточек
   const [events] = useState(() => airtbleData.events);
   // Отфильтрованные события
@@ -56,7 +56,7 @@ export const CalendarGrid = (data) => {
         window.open(event.eventProfeePagelLink, '_blank'); // Открыть в новой вкладке, если не Telegram
       }
     } else {
-      navigate('/event', { state: event }); // Переход на страницу события
+      navigate(`/event/${event.id}`); // Переход на страницу события
     }
   };
 

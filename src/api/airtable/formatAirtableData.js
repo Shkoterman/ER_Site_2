@@ -162,6 +162,7 @@ export const formatAirtableData = ({ data }) => {
       }
 
       return {
+        id: record.id,
         title: formateTitle,
         time: formattedStartData,
         date: formattedTimeForColumns,
