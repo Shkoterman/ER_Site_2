@@ -5,15 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import '../App.css'; // Импортируем файл стилей
 
 export const CalendarGrid = (data) => {
+
   const airtbleData = formatAirtableData(data);
-  console.log(airtbleData);
   // Локальное состояние для карточек
   const [events] = useState(() => airtbleData.events);
   // Отфильтрованные события
   const [filteredEvents, setFilteredEvents] = useState(
     () => airtbleData.events
   );
-
+  //console.log(events);
   // Состояние для активных фильтров времени
   const [filtersTimeSet, setFiltersTimeSet] = useState(() => {
     const initialTimeFilters = Array.from(airtbleData.timeSetByEvents).reduce(
@@ -59,6 +59,7 @@ export const CalendarGrid = (data) => {
       navigate(`/event/${event.id}`); // Переход на страницу события
     }
   };
+
 
   //ЭТОТ МЕТОД ДЛЯ НОВОЙ ФИЛЬТРАЦИИ ПО ВРЕМЕНИ КОГДА МОЖНО ВЫБРАТЬ ТОЛЬКО 1 ФИЛЬТР
   const handleFilterTimeClick = (filter) => {
@@ -138,41 +139,20 @@ export const CalendarGrid = (data) => {
     const filtered = events.filter((event) => {
       // Фильтрация по времени
       const isTimeMatch =
-        filtersTimeSet['Всегда'] ||
-        Object.keys(filtersTimeSet).some((filterKey) => {
-          if (
-            airtbleData.timeSetByEvents.has(filterKey) &&
-            filtersTimeSet[filterKey]
-          ) {
-            if (filterKey === 'Сегодня') return event.isToday;
-            if (filterKey === 'Завтра') return event.isTomorrow;
-            if (filterKey === 'На этой неделе') return event.isThisWeek;
-            if (filterKey === 'На следующей неделе') return event.atNextWeek;
-            return true;
-          }
-          return false;
-        });
+        filtersTimeSet["Всегда"] || // Если "Всегда" = true, пропускаем проверку
+        event.eventTimeList.some((time) => filtersTimeSet[time]); // Проверяем соответствие eventTimeList
+
       // Фильтрация по тегам
-      const isTagMatch = Object.entries(filtersTagSet).some(([filterKey, isActive]) => {
-        return isActive && airtbleData.tagsSetByEvents.has(filterKey);
-      });
-      // Событие должно пройти оба фильтра (по времени и по тегам)
-      return isTimeMatch && isTagMatch;
+      const isTagMatch =
+        filtersTagSet["Все"] || // Если "Все" = true, пропускаем проверку
+        event.eventTagList.some((tag) => filtersTagSet[tag]); // Проверяем соответствие eventTagList
+
+      return isTimeMatch && isTagMatch; // Оставляем только события, удовлетворяющие обоим фильтрам
     });
-    // Обновляем отфильтрованные события
-    setFilteredEvents(filtered);
+
+    setFilteredEvents(filtered); // Обновляем отфильтрованные события
   };
 
-  //подсчёт клика
-  const countClick = async (inputText) => {
-    /*try {
-      await axios.post('http://localhost:5000/clickcount', {
-        text: inputText,
-      });
-    } catch (error) {
-      console.error('Ошибка при добавлении записи:', error);
-    }*/
-  };
   return (
     <div className='lg:flex flex-col gap-8 p-4 pb-24 bg-[#222221] text-[#70706c]'>
       <div className='py-12'>
@@ -197,11 +177,6 @@ export const CalendarGrid = (data) => {
                     }`}
                   onClick={() => {
                     handleFilterTimeClick(timeTag);
-                    countClick(
-                      filtersTimeSet[timeTag]
-                        ? `filter off: ${timeTag}`
-                        : `filter on: ${timeTag}`
-                    );
                   }}
                 >
                   {timeTag}
@@ -224,11 +199,7 @@ export const CalendarGrid = (data) => {
                     }`}
                   onClick={() => {
                     handleFilterTagClick(tag);
-                    countClick(
-                      filtersTagSet[tag]
-                        ? `filter off: ${tag}`
-                        : `filter on: ${tag}`
-                    );
+
                   }}
                 >
                   {tag}
@@ -246,7 +217,6 @@ export const CalendarGrid = (data) => {
               className='cursor-pointer'
               onClick={() => {
                 handleCardClick(event);
-                countClick('event card click: ' + event.title);
               }}
             >
               <EventCard {...event} />

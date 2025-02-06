@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logoImage from './img/logo_ensalada.png';
 
-const Header = ({ countClick = () => {} }) => {
+const Header = () => {
   // Добавляем значение по умолчанию для countClick
   const [isOpen, setIsOpen] = useState(false);
 
@@ -10,8 +10,7 @@ const Header = ({ countClick = () => {} }) => {
     setIsOpen(!isOpen);
   };
 
-  const handleNavClick = (text) => {
-    countClick(text);
+  const handleNavClick = () => {
     setIsOpen(false); // Закрываем меню при клике на ссылку
   };
 
@@ -20,7 +19,7 @@ const Header = ({ countClick = () => {} }) => {
       {/* Логотип */}
       <div className='flex'>
         <div className='flex-none w-40 lg:w-48 lg:mt-2 py-2 cursor-pointer'>
-          <Link to='/CalendarGrid' onClick={() => handleNavClick('nav: Лого')}>
+          <Link to='/CalendarGrid' onClick={() => handleNavClick()}>
             <img src={logoImage} alt='Logo' />
           </Link>
         </div>
@@ -51,14 +50,13 @@ const Header = ({ countClick = () => {} }) => {
 
       {/* Меню */}
       <ul
-        className={`bg-[#111111] ${
-          isOpen ? 'flex' : 'hidden'
-        } flex-col absolute top-16 left-0 w-full shadow-lg p-4 gap-3 md:gap-3 md:flex md:flex-row md:static md:top-0 md:w-auto`}
+        className={`bg-[#111111] ${isOpen ? 'flex' : 'hidden'
+          } flex-col absolute top-16 left-0 w-full shadow-lg p-4 gap-3 md:gap-3 md:flex md:flex-row md:static md:top-0 md:w-auto`}
       >
         <li>
           <Link
             to='/about'
-            onClick={() => handleNavClick('nav: О нас')}
+            onClick={() => handleNavClick()}
             className='block mt-1.5 py-2 px-4 text-white/60 hover:text-white'
           >
             О нас
@@ -67,7 +65,7 @@ const Header = ({ countClick = () => {} }) => {
         <li>
           <Link
             to='/CalendarGrid'
-            onClick={() => handleNavClick('nav: Календарь grid')}
+            onClick={() => handleNavClick()}
             className='block mt-1.5 py-2 px-4 text-white/60 hover:text-white'
           >
             Календарь

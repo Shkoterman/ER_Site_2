@@ -17,6 +17,8 @@ export const formatAirtableData = ({ data }) => {
     console.error('Ошибка: Нет данных после загрузки.');
   }
 
+
+
   //строка под события с по
   const firstDate = parseISO(data[0].fields.start_date);
   const lastDate = parseISO(data[data.length - 1].fields.start_date);
@@ -31,7 +33,6 @@ export const formatAirtableData = ({ data }) => {
     globalTimeSpan: `${format(firstBarcelonaTime, "dd MMMM", { locale: ru })} - ${format(lastBarcelonaTime, 'dd MMMM', { locale: ru })}`,
     events: data.map((record) => {
       // Время
-
       const startDate = record.fields.start_date
         ? new Date(record.fields.start_date)
         : null;
@@ -61,6 +62,7 @@ export const formatAirtableData = ({ data }) => {
       let formatedStartTime = format(barcelonaStartData, 'HH:mm', {
         locale: ru,
       });
+
 
       let formattedStartData = format(barcelonaStartData, 'dd MMMM', {
         locale: ru,
@@ -132,6 +134,14 @@ export const formatAirtableData = ({ data }) => {
             ? 'хз 🤷‍♂️'
             : record.fields.cost_all + ' €';
 
+      const formatedPriceMore =
+        record.fields.cost_more === 0
+
+          ? 'Бесплатно'
+          : record.fields.cost_more === undefined
+            ? ''
+            : record.fields.cost_more + ' €';
+
       // Булевые поля времени
       const isTodayEvent = isToday(barcelonaStartData);
       const isTomorrowEvent = isTomorrow(barcelonaStartData);
@@ -139,11 +149,7 @@ export const formatAirtableData = ({ data }) => {
         weekStartsOn: 1,
       });
 
-      if (isTodayEvent) timeSetByEvents.add('Сегодня');
-      if (isTomorrowEvent) timeSetByEvents.add('Завтра');
-      if (isThisWeekEvent) timeSetByEvents.add('На этой неделе');
-
-      // Добавляем временные теги в Set timeList
+      //для На следующей неделе
       const nextWeekStart = startOfWeek(addWeeks(new Date(), 1), {
         weekStartsOn: 1,
       });
@@ -153,13 +159,46 @@ export const formatAirtableData = ({ data }) => {
         end: nextWeekEnd,
       });
 
-      if (atNextWeekEvent) timeSetByEvents.add('На следующей неделе');
+
+
+      const eventTimeList = [];
+      // Добавляем временные теги в глобальный Set timeList и в ивентовый список тэгов вре
+      if (isTodayEvent) {
+        timeSetByEvents.add('Сегодня');
+        eventTimeList.push('Сегодня');
+      }
+      if (isTomorrowEvent) {
+        timeSetByEvents.add('Завтра');
+        eventTimeList.push('Завтра');
+      }
+      if (isThisWeekEvent) {
+        timeSetByEvents.add('На этой неделе');
+        eventTimeList.push('На этой неделе');
+      }
+      if (atNextWeekEvent) {
+        timeSetByEvents.add('На следующей неделе');
+        eventTimeList.push('На следующей неделе');
+      }
+
+
 
       if (Array.isArray(record.fields.web_site_tag)) {
         record.fields.web_site_tag.forEach((tag) =>
           tagsSetByEvents.add(tag.trim())
-        ); // Добавляем теги в Set
+        ); // Добавляем теги в глобальный Set
       }
+
+      const soldout = record.fields['Свободных мест'] > 0
+        ? false
+        : true;
+
+      const ensaladaEvent = record.fields['Статус'] === '👽 Чужой ивент'
+        ? false
+        : true;
+
+      const moreOnly = record.fields.is_it_subscribers_only === true
+        ? true
+        : false;
 
       return {
         id: record.id,
@@ -185,14 +224,19 @@ export const formatAirtableData = ({ data }) => {
         shortDescription: formatedShortDescription,
         description: record.fields['Описание']?.trim() || '', // Проверка на undefined
         price: formatedPrice,
+        priceMore: formatedPriceMore,
         imageUrl: record.fields.image?.[0]?.url?.trim() || '', // Проверка на undefined
         isToday: isTodayEvent,
         isTomorrow: isTomorrowEvent,
         isThisWeek: isThisWeekEvent,
         atNextWeek: atNextWeekEvent,
         eventTagList: record.fields.web_site_tag ? [...record.fields.web_site_tag, 'Все'] : ['Все'],
+        eventTimeList: eventTimeList,
         eventExternalLink: record.fields.external_link?.trim() || '',
         eventProfeePagelLink: record.fields.profee_page_link?.trim() || '',
+        soldOut: soldout,
+        moreOnly: moreOnly,
+        ensaladaEvent: ensaladaEvent,
 
 
       };
