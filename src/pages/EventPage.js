@@ -4,40 +4,48 @@ import { marked } from 'marked';
 import '../App.css'; // Импортируем стили
 import { formatAirtableData } from '../api/airtable/formatAirtableData';
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 
 
 
 export const EventPage = (data) => {
-  console.log(data)
+
   const [showQuickReg, setShowQuickReg] = useState(false);
   const [tgNick, setTgNick] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const quickRegForm = () => {
     setShowQuickReg(true);
+    setIsSubmitted(false); // Сбрасываем флаг отправки, если форма открывается снова
   };
 
   const checkQuickRegData = () => {
-    console.log("чек данных", tgNick, name)
-    if (tgNick.trim() === "") {
-      setError("это обязательное поле");
-    } else {
-      setError("");
-      sendQuickRegData({ tgNick, name });
+    if (!tgNick.trim()) {
+      setError("Это обязательное поле");
+      return;
     }
+
+    setError("");
+    sendQuickRegData({ tgNick, name });
+
+    // Запускаем анимацию скрытия формы перед показом сообщения
+    setTimeout(() => {
+      setShowQuickReg(false);
+      setIsSubmitted(true);
+    }, 500);
   };
 
   const sendQuickRegData = () => {
-    console.log("отправка реги", tgNick, name)
+    //console.log("отправка реги", tgNick, name)
   };
 
   const navigate = useNavigate();
   const airtbleData = formatAirtableData(data).events;
   const event = airtbleData[0];
-
+  //console.log(event)
   const handleBackButtonClick = () => {
     navigate(-1);
   };
@@ -68,12 +76,15 @@ export const EventPage = (data) => {
               {event.time}
             </div>
             <div className="flex gap-2 text-sm mb-8 mt-4">
-              <div className="border border-[#FDFCF6]/20 rounded-full px-4 py-1">
-                Уже завтра!!!!!!!
-              </div>
-              <div className="border border-[#FDFCF6]/20 rounded-full px-4 py-1">
-                by Ensalada!!!!!!
-              </div>
+
+              {[...event.eventTimeList, ...event.eventTagList]
+                .filter(tag => tag !== "Все") // Убираем "Все"
+                .map((tag, index) => (
+                  <div key={index} className="border border-[#FDFCF6]/20 rounded-full px-4 py-1">
+                    {tag}
+                  </div>
+                ))}
+
             </div>
             <div className="font-[200] lg:text-[18px] lg:leading-[28px] flex flex-col gap-6 pb-16">
               <p dangerouslySetInnerHTML={{ __html: marked(event.description) }} />
@@ -184,38 +195,53 @@ export const EventPage = (data) => {
                 )}
 
                 {/* Форма быстрой регистрации */}
-                {showQuickReg && (
-                  <motion.div
-                    className="w-full px-4 mt-4 flex flex-col gap-3"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <input
-                      type="text"
-                      placeholder="@tg ник"
-                      value={tgNick}
-                      onChange={(e) => setTgNick(e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg bg-[#272527] text-white placeholder-[#595959] border border-[#595959]/50"
-                    />
-                    {error && <div className="text-red-500 text-sm">{error}</div>}
-
-                    <input
-                      type="text"
-                      placeholder="имя*"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg bg-[#272527] text-white placeholder-[#595959] border border-[#595959]/50"
-                    />
-
-                    <button
-                      className="bg-[#E1B71C] text-[#272527] mt-4 px-4 py-3 rounded-xl text-lg font-[700] flex place-content-center w-[calc(100%)] mx-auto"
-                      onClick={checkQuickRegData}
+                <AnimatePresence mode="wait">
+                  {showQuickReg && (
+                    <motion.div
+                      className="w-full px-4 mt-4 flex flex-col gap-3"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.5 }}
                     >
-                      Отправить заявку
-                    </button>
-                  </motion.div>
-                )}
+                      <input
+                        type="text"
+                        placeholder="@tg ник"
+                        value={tgNick}
+                        onChange={(e) => setTgNick(e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg bg-[#272527] text-white placeholder-[#595959] border border-[#595959]/50"
+                      />
+                      {error && <div className="text-red-500 text-sm">{error}</div>}
+
+                      <input
+                        type="text"
+                        placeholder="имя*"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg bg-[#272527] text-white placeholder-[#595959] border border-[#595959]/50"
+                      />
+
+                      <button
+                        className="bg-[#E1B71C] text-[#272527] mt-4 px-4 py-3 rounded-xl text-lg font-[700] flex place-content-center w-[calc(100%)] mx-auto"
+                        onClick={checkQuickRegData}
+                      >
+                        Отправить заявку
+                      </button>
+                    </motion.div>
+                  )}
+
+                  {isSubmitted && (
+                    <motion.div
+                      className="text-green-500 text-lg font-semibold text-center mt-4"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.5, delay: 0.5 }} // Добавил задержку, чтобы надпись появилась после скрытия формы
+                    >
+                      Заявка отправлена
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
 

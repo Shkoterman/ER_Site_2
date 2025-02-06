@@ -149,7 +149,13 @@ export const formatAirtableData = ({ data }) => {
         weekStartsOn: 1,
       });
 
+      const timeTagList = [
+        isThisWeekEvent && "На этой неделе",
+        isTomorrowEvent && "Завтра",
+        isTodayEvent && "Сегодня",
+      ].filter(Boolean);
       //для На следующей неделе
+
       const nextWeekStart = startOfWeek(addWeeks(new Date(), 1), {
         weekStartsOn: 1,
       });
@@ -237,6 +243,7 @@ export const formatAirtableData = ({ data }) => {
         soldOut: soldout,
         moreOnly: moreOnly,
         ensaladaEvent: ensaladaEvent,
+        timeTagList: timeTagList,
 
 
       };
