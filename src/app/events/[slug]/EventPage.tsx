@@ -33,7 +33,7 @@ export const EventPage = ({
     }
 
     setError('');
-    // sendQuickRegData({ tgNick, name });
+    sendQuickRegData();
 
     // Запускаем анимацию скрытия формы перед показом сообщения
     setTimeout(() => {
@@ -42,9 +42,34 @@ export const EventPage = ({
     }, 500);
   };
 
-  // const sendQuickRegData = () => {
-  //   console.log("отправка реги", tgNick, name)
-  // };
+  const sendQuickRegData = async () => {
+    try {
+      console.log('Отправка регистрации', airtableEvent.id, tgNick, name);
+
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tgNick,
+          name,
+          eventId: airtableEvent.id,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Ошибка при отправке запроса');
+      }
+
+      console.log('Регистрация успешна!');
+      setShowQuickReg(false);
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Ошибка регистрации:', error);
+      setError('Ошибка при регистрации, попробуйте снова.');
+    }
+  };
 
   //console.log(event)
   const handleBackButtonClick = () => {

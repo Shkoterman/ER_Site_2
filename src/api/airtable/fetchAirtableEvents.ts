@@ -1,6 +1,5 @@
 import { BASE_ID, TABLE_NAME, AIRTABLE_API_KEY } from './airtableConfig';
 import { EventsDTO } from './dtoTypes';
-
 const VIEW_NAME = 'for_web_calendar';
 const fieldsToFetch = [
   'start_date',
