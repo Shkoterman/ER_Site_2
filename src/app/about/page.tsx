@@ -44,7 +44,7 @@ export default function About() {
 
           <p>
             <Link
-              href='/calendar'
+              href='/events'
               className='hover:text-[#fdfcf6] underline underline-offset-8'
             >
               Погнали с нами!

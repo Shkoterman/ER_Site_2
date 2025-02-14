@@ -3,7 +3,7 @@ import React from 'react';
 import Image from 'next/image';
 
 import { marked } from 'marked';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AirtableEvent } from '@/api/airtable/types';
 import { useRouter } from 'next/navigation';
@@ -14,12 +14,20 @@ export const EventPage = ({
   airtableEvent: AirtableEvent;
 }) => {
   const router = useRouter();
-
+  const [parsedDescription, setParsedDescription] = useState('');
   const [showQuickReg, setShowQuickReg] = useState(false);
   const [tgNick, setTgNick] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (airtableEvent.description) {
+      const markdownHtml = marked(airtableEvent.description) as string;
+      const formattedHtml = markdownHtml.replace(/(?<!\n)\n(?!\n)/g, '<br />'); // Одинарные \n → <br />
+      setParsedDescription(formattedHtml);
+    }
+  }, [airtableEvent.description]);
 
   const quickRegForm = () => {
     setShowQuickReg(true);
@@ -71,9 +79,30 @@ export const EventPage = ({
     }
   };
 
-  //console.log(event)
+  //console.log(airtableEvent.description)
   const handleBackButtonClick = () => {
     router.back();
+  };
+
+  const handleButtonClick = () => {
+    if (airtableEvent.eventProfeePagelLink) {
+      const userAgent = navigator.userAgent;
+      const isTelegramBrowser =
+        /Telegram/i.test(userAgent) ||
+        /Chrome\/[\d\.]+ Mobile Safari/i.test(userAgent);
+
+      if (isTelegramBrowser) {
+        window.location.href = airtableEvent.eventProfeePagelLink; // Открыть в текущем окне
+      } else {
+        window.open(
+          airtableEvent.eventProfeePagelLink,
+          '_blank',
+          'noopener,noreferrer'
+        ); // Открыть в новой вкладке
+      }
+    } else {
+      quickRegForm(); // Если ссылки нет — вызвать форму регистрации
+    }
   };
 
   return (
@@ -110,12 +139,12 @@ export const EventPage = ({
             <div className='font-[200] lg:text-[18px] lg:leading-[28px] flex flex-col gap-6 pb-16'>
               <p
                 dangerouslySetInnerHTML={{
-                  __html: marked(airtableEvent.description),
+                  __html: parsedDescription,
                 }}
               />
             </div>
           </div>
-          <div className='flex-none lg:w-1/3 px-3 lg:p-4'>
+          <div className='flex-none lg:w-1/3 px-3 lg:p-4 pb-5'>
             {/* Виджет картинки */}
             {airtableEvent.imageUrl && (
               <Image
@@ -204,22 +233,14 @@ export const EventPage = ({
 
             {/* Виджет стоимости и участия если это наш ивент для всех */}
             {airtableEvent.ensaladaEvent && !airtableEvent.moreOnly && (
-              <div className='bg-[#151516] rounded-2xl px-4 py-6 mt-4 flex flex-col items-center'>
+              <div className='bg-[#151516] rounded-2xl px-4 py-6 mt-4 flex flex-col items-center pb-6'>
                 <div className='px-4 pt-2 pb-0 text-[#FDFCF6] text-4xl font-[500] text-center'>
                   {airtableEvent.price}
                 </div>
 
                 <button
                   className='bg-[#E1B71C] text-[#272527] mt-4 px-4 py-3 rounded-xl text-lg font-[700] flex place-content-center w-[calc(100%-16px)] mx-auto'
-                  onClick={() =>
-                    airtableEvent.eventProfeePagelLink
-                      ? window.open(
-                          airtableEvent.eventProfeePagelLink,
-                          '_blank',
-                          'noopener,noreferrer'
-                        )
-                      : quickRegForm()
-                  }
+                  onClick={handleButtonClick}
                 >
                   {airtableEvent.eventProfeePagelLink
                     ? 'Регистрация и оплата'
@@ -251,7 +272,7 @@ export const EventPage = ({
                     >
                       <input
                         type='text'
-                        placeholder='@tg ник'
+                        placeholder='ник в телеграм'
                         value={tgNick}
                         onChange={(e) => setTgNick(e.target.value)}
                         className='w-full px-4 py-2 rounded-lg bg-[#272527] text-white placeholder-[#595959] border border-[#595959]/50'
@@ -262,7 +283,7 @@ export const EventPage = ({
 
                       <input
                         type='text'
-                        placeholder='имя*'
+                        placeholder='имя'
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         className='w-full px-4 py-2 rounded-lg bg-[#272527] text-white placeholder-[#595959] border border-[#595959]/50'

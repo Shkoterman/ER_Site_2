@@ -46,19 +46,7 @@ export const CalendarGrid = ({
   });
 
   const handleCardClick = (event: AirtableEvent) => {
-    const userAgent = navigator.userAgent;
-    const isTelegramBrowser =
-      /Telegram/i.test(userAgent) ||
-      /Chrome\/[\d\.]+ Mobile Safari/i.test(userAgent);
-    if (event.eventProfeePagelLink !== '') {
-      if (isTelegramBrowser) {
-        window.location.href = event.eventProfeePagelLink; // Открыть ссылку в текущем окне
-      } else {
-        window.open(event.eventProfeePagelLink, '_blank'); // Открыть в новой вкладке, если не Telegram
-      }
-    } else {
-      router.push(`/events/${event.id}`);
-    }
+    router.push(`/events/${event.id}`);
   };
 
   //ЭТОТ МЕТОД ДЛЯ НОВОЙ ФИЛЬТРАЦИИ ПО ВРЕМЕНИ КОГДА МОЖНО ВЫБРАТЬ ТОЛЬКО 1 ФИЛЬТР
@@ -128,10 +116,10 @@ export const CalendarGrid = ({
               (timeTag, index) => (
                 <li key={index}>
                   <button
-                    className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer text-[#666666] font-[500] ${
+                    className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] cursor-pointer font-[500] ${
                       filtersTimeSet[timeTag]
-                        ? 'bg-white text-[#333333] hover:text-black'
-                        : ''
+                        ? 'bg-white text-[#444444] hover:text-[#111111]'
+                        : 'bg-none text-[#666666] hover:text-[#999999]'
                     }`}
                     onClick={() => {
                       handleFilterTimeClick(timeTag);
@@ -153,10 +141,10 @@ export const CalendarGrid = ({
               (tag, index) => (
                 <li key={index}>
                   <button
-                    className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] bg-none hover:text-white cursor-pointer text-[#666666] font-[500] ${
+                    className={`min-w-24 px-3 py-1.5 border rounded-full border-[#9c9c9c] cursor-pointer font-[500] ${
                       filtersTagSet[tag]
-                        ? 'bg-white text-[#333333] hover:text-black'
-                        : ''
+                        ? 'bg-white text-[#444444] hover:text-[#111111]'
+                        : 'bg-none text-[#666666] hover:text-[#999999]'
                     }`}
                     onClick={() => {
                       handleFilterTagClick(tag);

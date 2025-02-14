@@ -48,13 +48,15 @@ export const Header = () => {
       </button>
 
       <ul
-        className={`bg-[#111111] ${isOpen ? 'flex' : 'hidden'
-          } flex-col absolute top-16 left-0 w-full shadow-lg p-4 gap-3 md:gap-3 md:flex md:flex-row md:static md:top-0 md:w-auto`}
+        className={`bg-[#111111] ${
+          isOpen ? 'flex' : 'hidden'
+        } flex-col absolute top-16 left-0 w-full shadow-lg p-4 gap-3 md:gap-3 md:flex md:flex-row md:static md:top-0 md:w-auto z-50`}
       >
         <li>
           <Link
             href='/about'
             className='block mt-1.5 py-2 px-4 text-white/60 hover:text-white'
+            onClick={() => setIsOpen(false)}
           >
             О нас
           </Link>
@@ -63,6 +65,7 @@ export const Header = () => {
           <Link
             href='/'
             className='block mt-1.5 py-2 px-4 text-white/60 hover:text-white'
+            onClick={() => setIsOpen(false)}
           >
             Календарь
           </Link>

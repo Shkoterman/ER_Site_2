@@ -5,9 +5,8 @@ import { Header } from '@/app/Header';
 import { Footer } from '@/app/Footer';
 
 export const metadata: Metadata = {
-  title: 'ensalada - русскоязычное оффлайн сообщество в Барселоне',
-  description:
-    'Русскоязычное оффлайн сообщество в Барселоне. Медиа, ивенты, хуй войне',
+  title: 'ensalada - сообщество в Барселоне',
+  description: 'Комьюнити в Барселоне',
   viewport: 'width=device-width, initial-scale=1',
 };
 

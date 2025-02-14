@@ -19,8 +19,6 @@ export const mapAirtableEvents = (data: EventsDTO): AirtableEventsData => {
     console.error('Ошибка: Нет данных после загрузки.');
   }
 
-
-
   //строка под события с по
   const firstDate = parseISO(data[0].fields.start_date);
   const lastDate = parseISO(data[data.length - 1].fields.start_date);
@@ -69,7 +67,6 @@ export const mapAirtableEvents = (data: EventsDTO): AirtableEventsData => {
         locale: ru,
       });
 
-
       let formattedStartData = format(barcelonaStartData, 'dd MMMM', {
         locale: ru,
       });
@@ -105,8 +102,8 @@ export const mapAirtableEvents = (data: EventsDTO): AirtableEventsData => {
           //для подписки и ещё дней
           const dayDifference = Math.ceil(
             (Number(barcelonaStopData) - Number(startDate)) /
-            (1000 * 60 * 60 * 24) -
-            1
+              (1000 * 60 * 60 * 24) -
+              1
           );
           formatedDataStr = `и ещё ${dayDifference} ${getDayWord(dayDifference)}`;
 
@@ -198,18 +195,14 @@ export const mapAirtableEvents = (data: EventsDTO): AirtableEventsData => {
         ); // Добавляем теги в глобальный Set
       }
 
-      const soldout = record.fields['Свободных мест'] > 0
-        ? false
-        : true;
+      const soldout = record.fields['Свободных мест'] > 0 ? false : true;
 
-      const ensaladaEvent = record.fields['Статус'] === '👽 Чужой ивент'
-        ? false
-        : true;
+      const ensaladaEvent =
+        record.fields['Статус'] === '👽 Чужой ивент' ? false : true;
 
-      const moreOnly = record.fields.is_it_subscribers_only === true
-        ? true
-        : false;
-
+      const moreOnly =
+        record.fields.is_it_subscribers_only === true ? true : false;
+      //console.log(record.fields['Описание'])
       return {
         id: record.id,
         title: formateTitle,
@@ -238,7 +231,9 @@ export const mapAirtableEvents = (data: EventsDTO): AirtableEventsData => {
         isTomorrow: isTomorrowEvent,
         isThisWeek: isThisWeekEvent,
         atNextWeek: atNextWeekEvent,
-        eventTagList: record.fields.web_site_tag ? [...record.fields.web_site_tag, 'Все'] : ['Все'],
+        eventTagList: record.fields.web_site_tag
+          ? [...record.fields.web_site_tag, 'Все']
+          : ['Все'],
         eventTimeList: eventTimeList,
         eventExternalLink: record.fields.external_link?.trim() || '',
         eventProfeePagelLink: record.fields.profee_page_link?.trim() || '',
