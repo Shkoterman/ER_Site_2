@@ -11,7 +11,6 @@ export default function MetrikaTracker() {
       window.ym(99712331, 'hit', pathname, {
         referer: document.referrer,
       });
-      console.log('Отправлен Yandex.Metrika hit для:', pathname);
     }
   }, [pathname]);
 
