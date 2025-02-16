@@ -30,6 +30,7 @@ export const EventPage = ({
   }, [airtableEvent.description]);
 
   const quickRegForm = () => {
+    window.ym(99712331, 'reachGoal', 'show_reg_form');
     setShowQuickReg(true);
     setIsSubmitted(false); // Сбрасываем флаг отправки, если форма открывается снова
   };
@@ -52,8 +53,8 @@ export const EventPage = ({
 
   const sendQuickRegData = async () => {
     try {
-      console.log('Отправка регистрации', airtableEvent.id, tgNick, name);
-
+      //console.log('Отправка регистрации', airtableEvent.id, tgNick, name);
+      window.ym(99712331, 'reachGoal', 'send_reg_data');
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
@@ -90,7 +91,7 @@ export const EventPage = ({
       const isTelegramBrowser =
         /Telegram/i.test(userAgent) ||
         /Chrome\/[\d\.]+ Mobile Safari/i.test(userAgent);
-
+      window.ym(99712331, 'reachGoal', 'profee_link_click');
       if (isTelegramBrowser) {
         window.location.href = airtableEvent.eventProfeePagelLink; // Открыть в текущем окне
       } else {
@@ -254,6 +255,14 @@ export const EventPage = ({
                       target='_blank'
                       rel='noopener noreferrer'
                       className='text-[#595959] underline underline-offset-4'
+                      onClick={() => {
+                        if (
+                          typeof window !== 'undefined' &&
+                          typeof window.ym === 'function'
+                        ) {
+                          window.ym(99712331, 'reachGoal', 'more_under_price');
+                        }
+                      }}
                     >
                       или {airtableEvent.priceMore} с подпиской .more
                     </a>
