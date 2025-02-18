@@ -102,8 +102,8 @@ export const mapAirtableEvents = (data: EventsDTO): AirtableEventsData => {
           //для подписки и ещё дней
           const dayDifference = Math.ceil(
             (Number(barcelonaStopData) - Number(startDate)) /
-              (1000 * 60 * 60 * 24) -
-              1
+            (1000 * 60 * 60 * 24) -
+            1
           );
           formatedDataStr = `и ещё ${dayDifference} ${getDayWord(dayDifference)}`;
 
@@ -123,7 +123,7 @@ export const mapAirtableEvents = (data: EventsDTO): AirtableEventsData => {
       // чистка имоджей
       const formateTitle =
         record.fields.Name_event?.replace(
-          /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{2B50}\u{2764}\u{FE0F}\u{200B}\u{200C}\u{200D}\u{2060}\u{1F004}-\u{1F0CF}\u{1F34A}-]/gu,
+          /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{2B50}\u{2764}\u{FE0F}\u{200B}\u{200C}\u{200D}\u{2060}\u{1F004}-\u{1F0CF}\u{1F34A}]/gu,
           ''
         )?.trim() || ''; // Проверка на undefined
 
@@ -138,14 +138,14 @@ export const mapAirtableEvents = (data: EventsDTO): AirtableEventsData => {
           ? 'Бесплатно'
           : record.fields.cost_all === undefined
             ? 'хз 🤷‍♂️'
-            : record.fields.cost_all + ' €';
+            : record.fields.cost_all + '€';
 
       const formatedPriceMore =
         record.fields.cost_more === 0
           ? 'Бесплатно'
           : record.fields.cost_more === undefined
             ? ''
-            : record.fields.cost_more + ' €';
+            : record.fields.cost_more + '€';
 
       // Булевые поля времени
       const isTodayEvent = isToday(barcelonaStartData);
