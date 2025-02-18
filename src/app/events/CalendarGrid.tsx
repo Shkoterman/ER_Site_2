@@ -23,22 +23,31 @@ export const CalendarGrid = ({
 
   // Состояния фильтров
   const [filtersTimeSet, setFiltersTimeSet] = useState(() => {
+    // Создаём объект с фильтрами, все false
     const timeFilters = Object.fromEntries(
       Array.from(airtableEventsData.timeSetByEvents).map((time) => [
         time,
         false,
       ])
     );
-    timeFilters['Всегда'] = true;
-    return { ...timeFilters, [initialTimeFilter]: true };
+    // Добавляем ключ "Всегда", если его нет (если он не включён в airtableEventsData.timeSetByEvents)
+    if (!timeFilters.hasOwnProperty('Всегда')) {
+      timeFilters['Всегда'] = false;
+    }
+    // Устанавливаем активный фильтр из URL (или по умолчанию)
+    timeFilters[initialTimeFilter] = true;
+    return timeFilters;
   });
 
   const [filtersTagSet, setFiltersTagSet] = useState(() => {
     const tagFilters = Object.fromEntries(
       Array.from(airtableEventsData.tagsSetByEvents).map((tag) => [tag, false])
     );
-    tagFilters['Все'] = true;
-    return { ...tagFilters, [initialTagFilter]: true };
+    if (!tagFilters.hasOwnProperty('Все')) {
+      tagFilters['Все'] = false;
+    }
+    tagFilters[initialTagFilter] = true;
+    return tagFilters;
   });
 
   useEffect(() => {
