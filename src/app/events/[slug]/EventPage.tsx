@@ -82,7 +82,7 @@ export const EventPage = ({
 
   //console.log(airtableEvent.description)
   const handleBackButtonClick = () => {
-    router.back();
+    router.push('/events');
   };
 
   const handleButtonClick = () => {
@@ -118,17 +118,6 @@ export const EventPage = ({
     }
   };
 
-  console.log('цена мор ', typeof airtableEvent.price, airtableEvent.price);
-  console.log(
-    'цена мор ',
-    typeof parseInt(airtableEvent.price),
-    parseInt(airtableEvent.price)
-  );
-  console.log(
-    'цена мор ',
-    typeof airtableEvent.priceMore,
-    airtableEvent.priceMore
-  );
   return (
     <div className='bg-[#1d1d20] text-[#a2a2a7] font-sans leading-normal tracking-normal px-2 w-full'>
       <div className='max-w-5xl mx-auto relative'>
@@ -148,18 +137,24 @@ export const EventPage = ({
             <div className='pt-0 lg:pt-1 py-1 text-xl lg:text-2xl font-[300] text-[#676767]'>
               {airtableEvent.time}
             </div>
-            <div className='flex gap-2 text-sm mb-8 mt-4'>
-              {[...airtableEvent.eventTimeList, ...airtableEvent.eventTagList]
-                .filter((tag) => tag !== 'Все') // Убираем "Все"
-                .map((tag, index) => (
-                  <div
-                    key={index}
-                    className='border border-[#FDFCF6]/20 rounded-full px-4 py-1'
-                  >
-                    {tag}
-                  </div>
-                ))}
+
+            {/* Тэги */}
+            <div className='overflow-x-auto'>
+              <div className='flex gap-2 text-sm mb-4 mt-4 whitespace-nowrap'>
+                {[...airtableEvent.eventTimeList, ...airtableEvent.eventTagList]
+                  .filter((tag) => tag !== 'Все') // Убираем "Все"
+                  .map((tag, index) => (
+                    <div
+                      key={index}
+                      className='border border-[#FDFCF6]/20 rounded-full px-4 py-1 inline-block whitespace-nowrap'
+                    >
+                      {tag}
+                    </div>
+                  ))}
+              </div>
             </div>
+
+            {/* описание */}
             <div className='font-[200] lg:text-[18px] lg:leading-[28px] flex flex-col gap-6 pb-16'>
               <p
                 dangerouslySetInnerHTML={{
@@ -279,7 +274,7 @@ export const EventPage = ({
                       href='https://t.me/ensalada/3434'
                       target='_blank'
                       rel='noopener noreferrer'
-                      className='text-[#595959] underline underline-offset-4'
+                      className='text-[#838383] text-base underline underline-offset-4'
                       onClick={() => {
                         if (
                           typeof window !== 'undefined' &&
