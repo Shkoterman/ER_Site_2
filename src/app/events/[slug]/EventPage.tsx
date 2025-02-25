@@ -30,9 +30,15 @@ export const EventPage = ({
   }, [airtableEvent.description]);
 
   const quickRegForm = () => {
-    window.ym(99712331, 'reachGoal', 'show_reg_form');
-    setShowQuickReg(true);
-    setIsSubmitted(false); // Сбрасываем флаг отправки, если форма открывается снова
+    if (showQuickReg) {
+      // Форма уже открыта – скрываем её
+      setShowQuickReg(false);
+    } else {
+      // Форма закрыта – открываем её и сбрасываем флаг отправки
+      window.ym(99712331, 'reachGoal', 'show_reg_form');
+      setShowQuickReg(true);
+      setIsSubmitted(false);
+    }
   };
 
   const checkQuickRegData = () => {
@@ -71,7 +77,7 @@ export const EventPage = ({
         throw new Error('Ошибка при отправке запроса');
       }
 
-      console.log('Регистрация успешна!');
+      //console.log('Регистрация успешна!');
       setShowQuickReg(false);
       setIsSubmitted(true);
     } catch (error) {
@@ -100,21 +106,17 @@ export const EventPage = ({
       ymgoal = 'external_link_click';
     }
 
-    if (!openlink) {
-      quickRegForm();
+    const userAgent = navigator.userAgent;
+    const isTelegramBrowser =
+      /Telegram/i.test(userAgent) ||
+      /Chrome\/[\d.]+ Mobile Safari/i.test(userAgent);
+
+    window.ym(99712331, 'reachGoal', ymgoal);
+
+    if (isTelegramBrowser) {
+      window.location.href = openlink; // Открыть в текущем окне
     } else {
-      const userAgent = navigator.userAgent;
-      const isTelegramBrowser =
-        /Telegram/i.test(userAgent) ||
-        /Chrome\/[\d.]+ Mobile Safari/i.test(userAgent);
-
-      window.ym(99712331, 'reachGoal', ymgoal);
-
-      if (isTelegramBrowser) {
-        window.location.href = openlink; // Открыть в текущем окне
-      } else {
-        window.open(openlink, '_blank', 'noopener,noreferrer'); // Открыть в новой вкладке
-      }
+      window.open(openlink, '_blank', 'noopener,noreferrer'); // Открыть в новой вкладке
     }
   };
 
@@ -122,7 +124,9 @@ export const EventPage = ({
     <div className='bg-[#1d1d20] text-[#a2a2a7] font-sans leading-normal tracking-normal px-2 w-full'>
       <div className='max-w-5xl mx-auto relative'>
         <div className='pt-[300px] lg:pt-20 lg:flex'>
+          {/* страничное */}
           <div className='flex-none lg:w-2/3 px-3 lg:px-0 lg:pr-12'>
+            {/* назад */}
             <div className='py-2 text-sm font-[300]'>
               <button
                 className='text-[#565656] inline-block -ml-2 pl-2 pr-4 py-2 rounded-lg hover:bg-[#151516]'
@@ -131,9 +135,13 @@ export const EventPage = ({
                 &larr; вернуться
               </button>
             </div>
+
+            {/* название */}
             <h1 className='text-4xl lg:text-5xl font-[600] text-[#FDFCF6] pt-4 lg:pt-16'>
               {airtableEvent.title}
             </h1>
+
+            {/* время */}
             <div className='pt-0 lg:pt-1 py-1 text-xl lg:text-2xl font-[300] text-[#676767]'>
               {airtableEvent.time}
             </div>
@@ -163,6 +171,8 @@ export const EventPage = ({
               />
             </div>
           </div>
+
+          {/* виджетное */}
           <div className='flex-none lg:w-1/3 px-3 lg:p-4 pb-5'>
             {/* Виджет картинки */}
             {airtableEvent.imageUrl && (
@@ -257,15 +267,6 @@ export const EventPage = ({
                   {airtableEvent.price}
                 </div>
 
-                <button
-                  className='bg-[#E1B71C] text-[#272527] mt-4 px-4 py-3 rounded-xl text-lg font-[700] flex place-content-center w-[calc(100%-16px)] mx-auto'
-                  onClick={handleButtonClick}
-                >
-                  {airtableEvent.eventProfeePagelLink
-                    ? 'Регистрация и оплата'
-                    : 'Регистрация'}
-                </button>
-
                 {(airtableEvent.priceMore < airtableEvent.price ||
                   (parseInt(airtableEvent.price) > 0 &&
                     airtableEvent.priceMore === 'Бесплатно')) && (
@@ -289,6 +290,24 @@ export const EventPage = ({
                     </a>
                   </div>
                 )}
+
+                {/* Оплатить сейчас */}
+                {airtableEvent.eventProfeePagelLink && (
+                  <button
+                    className='bg-[#E1B71C] text-[#272527] mt-4 px-4 py-3 rounded-xl text-lg font-[700] flex place-content-center w-[calc(100%-16px)] mx-auto'
+                    onClick={handleButtonClick}
+                  >
+                    Оплатить сейчас
+                  </button>
+                )}
+
+                {/* Оплатить на месте */}
+                <button
+                  className='bg-[#E1B71C] text-[#272527] mt-4 px-4 py-3 rounded-xl text-lg font-[700] flex place-content-center w-[calc(100%-16px)] mx-auto'
+                  onClick={quickRegForm}
+                >
+                  Оплатить на месте
+                </button>
 
                 {/* Форма быстрой регистрации */}
                 <AnimatePresence mode='wait'>
