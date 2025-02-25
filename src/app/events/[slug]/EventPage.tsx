@@ -86,15 +86,18 @@ export const EventPage = ({
   };
 
   const handleButtonClick = () => {
-    let openlink = "";
-    let ymgoal = "";
+    let openlink = '';
+    let ymgoal = '';
 
     if (airtableEvent.eventProfeePagelLink && airtableEvent.ensaladaEvent) {
       openlink = airtableEvent.eventProfeePagelLink;
-      ymgoal = "profee_link_click";
-    } else if (airtableEvent.eventExternalLink && !airtableEvent.ensaladaEvent) {
+      ymgoal = 'profee_link_click';
+    } else if (
+      airtableEvent.eventExternalLink &&
+      !airtableEvent.ensaladaEvent
+    ) {
       openlink = airtableEvent.eventExternalLink;
-      ymgoal = "external_link_click";
+      ymgoal = 'external_link_click';
     }
 
     if (!openlink) {
@@ -105,17 +108,27 @@ export const EventPage = ({
         /Telegram/i.test(userAgent) ||
         /Chrome\/[\d.]+ Mobile Safari/i.test(userAgent);
 
-      window.ym(99712331, "reachGoal", ymgoal);
+      window.ym(99712331, 'reachGoal', ymgoal);
 
       if (isTelegramBrowser) {
         window.location.href = openlink; // Открыть в текущем окне
       } else {
-        window.open(openlink, "_blank", "noopener,noreferrer"); // Открыть в новой вкладке
+        window.open(openlink, '_blank', 'noopener,noreferrer'); // Открыть в новой вкладке
       }
     }
   };
 
-
+  console.log('цена мор ', typeof airtableEvent.price, airtableEvent.price);
+  console.log(
+    'цена мор ',
+    typeof parseInt(airtableEvent.price),
+    parseInt(airtableEvent.price)
+  );
+  console.log(
+    'цена мор ',
+    typeof airtableEvent.priceMore,
+    airtableEvent.priceMore
+  );
   return (
     <div className='bg-[#1d1d20] text-[#a2a2a7] font-sans leading-normal tracking-normal px-2 w-full'>
       <div className='max-w-5xl mx-auto relative'>
@@ -156,7 +169,6 @@ export const EventPage = ({
             </div>
           </div>
           <div className='flex-none lg:w-1/3 px-3 lg:p-4 pb-5'>
-
             {/* Виджет картинки */}
             {airtableEvent.imageUrl && (
               <Image
@@ -259,7 +271,9 @@ export const EventPage = ({
                     : 'Регистрация'}
                 </button>
 
-                {airtableEvent.priceMore < airtableEvent.price && (
+                {(airtableEvent.priceMore < airtableEvent.price ||
+                  (parseInt(airtableEvent.price) > 0 &&
+                    airtableEvent.priceMore === 'Бесплатно')) && (
                   <div className='text-right text-sm px-1 pt-2'>
                     <a
                       href='https://t.me/ensalada/3434'
@@ -275,7 +289,8 @@ export const EventPage = ({
                         }
                       }}
                     >
-                      или {airtableEvent.priceMore} с подпиской .more
+                      или {airtableEvent.priceMore.toLowerCase()} с подпиской
+                      .more
                     </a>
                   </div>
                 )}
@@ -334,24 +349,25 @@ export const EventPage = ({
             )}
 
             {/* Виджет стоимости и участия если это НЕ наш ивент */}
-            {!airtableEvent.ensaladaEvent && airtableEvent.eventExternalLink && (
-              <div className='bg-[#151516] rounded-2xl px-4 py-6 mt-4 flex flex-col items-center'>
-                <div className='px-4 pt-2 pb-0 text-[#FDFCF6] text-4xl font-[500] text-center'>
-                  от {airtableEvent.priceMore}
-                </div>
+            {!airtableEvent.ensaladaEvent &&
+              airtableEvent.eventExternalLink && (
+                <div className='bg-[#151516] rounded-2xl px-4 py-6 mt-4 flex flex-col items-center'>
+                  <div className='px-4 pt-2 pb-0 text-[#FDFCF6] text-4xl font-[500] text-center'>
+                    от {airtableEvent.priceMore}
+                  </div>
 
-                <button
-                  className='bg-[#E1B71C] text-[#272527] mt-4 px-4 py-3 rounded-xl text-lg font-[700] flex place-content-center w-[calc(100%-16px)] mx-auto'
-                  onClick={handleButtonClick}
-                >
-                  На страницу организатора
-                </button>
+                  <button
+                    className='bg-[#E1B71C] text-[#272527] mt-4 px-4 py-3 rounded-xl text-lg font-[700] flex place-content-center w-[calc(100%-16px)] mx-auto'
+                    onClick={handleButtonClick}
+                  >
+                    На страницу организатора
+                  </button>
 
-                <div className='text-right text-sm px-1 pt-2'>
-                  <a className='text-[#595959] underline underline-offset-4'></a>
+                  <div className='text-right text-sm px-1 pt-2'>
+                    <a className='text-[#595959] underline underline-offset-4'></a>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* SOLD OUT */}
             {airtableEvent.soldOut && (
